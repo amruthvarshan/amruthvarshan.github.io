@@ -1,173 +1,592 @@
-<!DOCTYPE HTML>
-<!--
-	Amruth Varshan's online portfolio.
-	Theme from html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>Amruth Varshan</title>
-		<link rel = "icon" href = "images/favicon.svg" type = "image/x-icon">
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	
-	<body class="is-preload">
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amruth Varshan</title>
+<meta name="description" content="Game designer, narrative designer and writer. Eight years across five studios — Rovio, Zynga, Ubisoft.">
+<link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
+<style>
+/* ============================================================================
+   THE PRINT SHEET
+   ----------------------------------------------------------------------------
+   A separate, purpose-built one-page A4 document built from the same data as
+   the page. It reads the SAME theme tokens as the site, so the PDF carries the
+   palette, the serif and the accent rule straight through — and it follows
+   whichever theme is active when you export.
 
-	<!-- Page Wrapper -->
-	<div id="page-wrapper">
+   @page margin is ZERO and the margins are drawn by #sheet's own padding.
+   That is what suppresses the browser's own header and footer (date, file
+   path, page number, document title) in Chrome and Edge.
+   ========================================================================== */
+#sheet{display:none}
+@page{size:A4; margin:0}
 
-		<!-- Header -->
-		<header id="header" class="alt">
-			<h1><a href="https://amruthvarshan.github.io/">Amruth Varshan</a></h1>
-			<nav>
-				<a href="#menu"></a>
-			</nav>
-		</header>
+@media print{
+  html,body{background:var(--paper)!important; color:var(--ink)!important}
+  body > *:not(#sheet){display:none!important}
+  #sheet{display:block}
+  *{-webkit-print-color-adjust:exact!important; print-color-adjust:exact!important}
+}
 
-		<!-- Menu -->
-		<nav id="menu">
-			<div class="inner">
-				<h3>Amruth Varshan</h3>
-				<a href="https://amruthvarshan.itch.io/" target="_blank" class="icon padded brands fa-itch-io"></a>
-				<a href="https://www.linkedin.com/in/amruthvarshan/" target="_blank" class="icon padded brands fa-linkedin"></a>
-				<a href="https://amruthvarshan.medium.com/" target="_blank" class="icon padded brands fa-medium"></a>
-				<ul class="links">
-					<li><a href="projects.html">Projects</a></li>
-					<li><a href="writing.html">Writing</a></li>
-					<li><a href="about.html">About</a></li>
-					<li><a href="photography/all.html">Photography</a></li>
-				</ul>
-				<a href="#" class="close">Close</a>
-			</div>
-		</nav>
+/* True-size preview on screen so the page break can be checked without
+   opening the print dialog every time — scoped to screen only. Without
+   that scoping, this rule's own 26px top+bottom margin stays active if
+   Save PDF is clicked while still in preview mode, pushing the sheet's
+   total height just past one A4 page and producing a near-blank second
+   page. Printing should always see the sheet at its plain print-mode
+   size, regardless of whatever the on-screen preview state happens to be. */
+@media screen{
+  body.preview{background:#4E524C}
+  body.preview > *:not(#sheet):not(header){display:none}
+  body.preview #sheet{display:block; width:210mm; min-height:297mm; margin:26px auto;
+    box-shadow:0 14px 50px rgba(0,0,0,.5)}
+}
 
-		<!-- Banner -->
-		<section id="banner" class="namebox spotlight">
-			<div class="inner">
-				<img src="images/profile.jpg" width="300" class="image">
-				<div class="content">
-					<h2>Amruth Varshan</h2>
-					<p>Game & Narrative Designer</p>
-					<p>
-						<a href="https://amruthvarshan.itch.io/" target="_blank" class="icon padded brands fa-itch-io"></a>
-						<a href="https://www.linkedin.com/in/amruthvarshan/" target="_blank" class="icon padded brands fa-linkedin"></a>
-						<a href="https://amruthvarshan.medium.com/" target="_blank" class="icon padded brands fa-medium"></a>
-					</p>
-					</ul>
-				</div>
-			</div>
-		</section>
+#sheet{
+  background:var(--paper); color:var(--ink);
+  padding:13mm 14mm; min-height:297mm;
+  font:400 9.6pt/1.42 "Inter Tight",sans-serif;
+}
+#sheet *{box-sizing:border-box}
 
-		<!-- Wrapper -->
-		<section id="wrapper">
+/* --- masthead: the same red block that anchors the site --- */
+#sheet .ph{display:flex; align-items:flex-end; justify-content:space-between; gap:8mm}
+#sheet .ph h1{font:400 27pt/.98 "Newsreader",serif; margin:0; letter-spacing:-.028em}
+#sheet .ph h1 .last{background:var(--accent); color:var(--accent-ink); padding:.056em .1em 0; display:inline-block}
+#sheet .ph .t{font-size:9.4pt; color:var(--muted); margin-top:2.4mm; letter-spacing:.01em}
+#sheet .ph .c{text-align:right; font-size:8.4pt; line-height:1.55; color:var(--ink-2)}
+/* Contact lines and project titles are real <a href> now (so the exported
+   PDF carries working hyperlinks) but should print exactly like the plain
+   text they used to be — no blue, no underline, no visual sign they're
+   links at all until someone actually clicks one in a PDF viewer. */
+#sheet a{color:inherit; text-decoration:none}
+#sheet .rule{height:2.4pt; background:var(--accent); margin:3.2mm 0 3mm}
+#sheet .pitch{font:300 12pt/1.4 "Newsreader",serif; font-style:italic; color:var(--ink-2); margin:0 0 5mm}
 
-			<!-- One -->
-			<section id="one" class="wrapper spotlight style1">
-				<div class="inner">
-					<img src="https://img.itch.zone/aW1nLzEzNTk5Nzc4LnBuZw==/315x250%23c/gp5p5o.png" class="image"/>
-					<div class="content">
-						<h2 class="major">Setting the Stage</h2>
-						<p>A musical, narrative puzzle game made in 72 hours for Ludum Dare 54. Was the lead writer & designer. Won 3rd place in the Audio category.</p>
-						<a href="https://baconeta.itch.io/setting-the-stage" class="special" target="_blank">Play (itch.io)</a>
-					</div>
-				</div>
-			</section>
+/* --- body grid --- */
+#sheet .grid{display:flex; gap:9mm; align-items:flex-start}
+#sheet .main{flex:1 1 63%} #sheet .side{flex:0 0 33%}
+#sheet section{padding:0}          /* override the site's section rhythm */
+#sheet h2{font:600 7.8pt/1 "Inter Tight"; letter-spacing:.13em; color:var(--ink);
+  margin:0 0 2.4mm; padding-bottom:1.1mm; border-bottom:.7pt solid var(--accent)}
+#sheet .side section + section h2{margin-top:4.6mm}
 
-			<!-- Two -->
-			<section id="two" class="wrapper alt spotlight style2">
-				<div class="inner">
-					<img src="images/styx.png" class="image"/>
-					<div class="content">
-						<h2 class="major">Styx & Stones</h2>
-						<p>An endless runner made in 72 hours for the Ludum Dare Game Jam 53. In charge of game and narrative design. Made in Unity.</p>
-						<a href="https://baconeta.itch.io/styx-and-stones" class="special" target="_blank">Play (itch.io)</a>
-					</div>
-				</div>
-			</section>
+/* Each role gets a small dot in the left margin with a hairline trailing
+   down to the next one — the same tenure-marker language as the on-page
+   chart, quietened for print. The dot sits in its own column (.tl) so the
+   connecting line has a stable place to anchor regardless of how many
+   bullets a given role has. */
+#sheet .job{display:flex; gap:2.6mm; margin-bottom:3.4mm; break-inside:avoid; padding:0; border:0}
+#sheet .job .tl{flex:0 0 2mm; padding-top:1.31mm; position:relative}
+#sheet .job .tl i{display:block; width:2mm; height:2mm; border-radius:50%; background:var(--accent)}
+#sheet .job .tl::after{content:""; position:absolute; top:4.93mm; bottom:-3.4mm; left:.9mm;
+  width:.5pt; background:var(--rule)}
+#sheet .job:last-child .tl::after{display:none}
+#sheet .job .jbody{flex:1; min-width:0}
+#sheet .job .r1{display:flex; justify-content:space-between; align-items:baseline; gap:4mm}
+#sheet .job .co{font:600 11.4pt/1.15 "Newsreader",serif; color:var(--ink)}
+#sheet .job .dt{font-size:8pt; color:var(--muted); white-space:nowrap}
+#sheet .job .ti{font-size:9pt; font-weight:600; color:var(--accent); margin-top:.3mm}
+#sheet .job ul{margin:1.2mm 0 0; padding:0; list-style:none; max-width:none}
+#sheet .job li{position:relative; padding-left:3.4mm; font-size:8.8pt; line-height:1.38;
+  margin-bottom:.8mm; color:var(--ink-2)}
+#sheet .job li::before{content:""; position:absolute; left:0; top:1.5mm; width:1.8mm;
+  height:.7pt; background:var(--accent); transform:none}
 
-			<!-- Three -->
-			<section id="three" class="wrapper spotlight style3">
-				<div class="inner">
-					<img src="images/eva.png" class="image"/>
-					<div class="content">
-						<h2 class="major">Eva</h2>
-						<p>An endless space shooter with a unique game mechanic made in 48 hours for the GMTK Game Jam 2021. In charge of all the writing and narrative systems. Facilitated SFX design & sourcing. Contributed meaningfully to game design. Made in Unity.</p>
-						<a href="https://amruthvarshan.itch.io/eva" class="special" target="_blank">Play (itch.io)</a>
-					</div>
-				</div>
-			</section>
+/* Disciplines and Tools: plain bordered chips, one per item. Replaces an
+   earlier inline dot-separated line, which read as one run-on fragment
+   rather than a list of distinct things. */
+#sheet .chips{display:flex; flex-wrap:wrap; gap:1.6mm}
+#sheet .chip{font-size:7.6pt; padding:1.2mm 2.4mm; border:.6pt solid var(--rule);
+  border-radius:1mm; color:var(--ink-2)}
 
-			<section id="three" class="wrapper alt style1">
-				<div class="inner">
-					<ul class="actions">
-						<li><a href="projects.html" class="special">All Projects</a></li>
-					</ul>
-				</div>
-			</section>
+/* Projects, in the side column: a single stacked list (there's no room for
+   the two-up grid the web page's carousel affords at this column width),
+   each entry marked with a left rule rather than a bullet. */
+#sheet .proj{display:flex; flex-direction:column; gap:3mm}
+#sheet .proj .p{break-inside:avoid; border-left:1.4pt solid var(--accent); padding-left:2.6mm}
+#sheet .proj .pt{font:600 9.2pt/1.2 "Newsreader",serif; color:var(--ink)}
+#sheet .proj .pm{font-size:7.4pt; color:var(--muted); font-weight:500; margin:.3mm 0 1.2mm;
+  text-transform:uppercase; letter-spacing:.03em}
+#sheet .proj .pl{font-size:8pt; line-height:1.4; color:var(--ink-2)}
 
-			<!-- Four -->
-			<section id="four" class="wrapper alt style1">
-				<div class="inner">
-					<h2 class="major">My Writing</h2>
-					<p>Storytelling has always been an integral part of my identity, and as a writer, I've spent years honing my craft. This assortment of work is a selective showcase of my skill with language and versatility with style.</p>
-					<section class="features">
-						<article>
-							<a href="downloads/Mutton.pdf" target="_blank"><img src="images/mutton.jpg" class="image"/>
-							<h3 class="major">Mutton</h3>
-							<p>An original short story.</p>
-							<a href="downloads/Mutton.pdf" class="special" target="_blank">Read (pdf)</a></a>
-						</article>
-						<article>
-							<a href="downloads/Siren Song.pdf" target="_blank"><img src="images/siren_song.jpg" class="image"/>
-							<h3 class="major">Siren Song</h3>
-							<p>A ballad-style poem about growing up, and finding your place in the world.</p>
-							<a href="downloads/Siren Song.pdf" class="special" target="_blank">Read (pdf)</a></a>
-						</article>
-						<article>
-							<a href="downloads/Manoeuvre.pdf" target="_blank"><img src="images/manoeuvre.jpg" class="image"/>
-							<h3 class="major">Manoeuvre</h3>
-							<p>A subversive, medieval fantasy short story that's more of an elaborate punchline.</p>
-							<a href="downloads/Manoeuvre.pdf" class="special" target="_blank">Read (pdf)</a></a>
-						</article>
-						<article>
-							<a href="downloads/Wrought.pdf" target="_blank"><img src="images/wrought.jpg" class="image"/>
-							<h3 class="major">Wrought</h3>
-							<p>An original poem about the struggles and delight of art and creation.</p>
-							<a href="downloads/Wrought.pdf" class="special" target="_blank">Read (pdf)</a></a>
-						</article>
-					</section>
-					<ul class="actions">
-						<li><a href="writing.html" class="button">Browse More</a></li>
-					</ul>
-				</div>
-			</section>
+#sheet .ed b{display:block; font-size:9pt; font-weight:600; color:var(--ink)}
+#sheet .ed span{display:block; font-size:8.4pt; color:var(--ink-2)}
+#sheet .ed em{display:block; font-style:normal; font-size:8pt; color:var(--muted); margin-top:1mm}
+</style>
+</head>
+<body class="no-js">
 
-		</section>
+<div id="prog"></div>
 
-		<!-- Footer -->
-		<section id="footer">
-			<div class="inner">
-				<h2 class="major">About</h2>
-				<p class="footer-padding">Hi there! I'm Amruth Varshan, currently a designer at Rovio. Over the course of my career, I have contributed to IPs such as Tom Clancy's Ghost Recon, Angry Birds, Willy Wonka, and The Wizard of Oz. I've worked on expanding the lore and world of these iconic franchises in meaningful ways.</p>
-				<ul class="actions"><li><a href="about.html" class="button primary">Learn More</a></li></ul>
-				<ul class="copyright">
-					<li>Copyright &copy; Amruth Varshan</li>
-					<li>amruthvarshan@gmail.com</li>
-				</ul>
-			</div>
-		</section>
-	</div>
+<header>
+  <div class="wrap">
+    <a class="sig" href="#hero"><span id="sig-name"></span><i id="sig-role"></i></a>
+    <nav id="nav">
+      <span id="ink"></span>
+    </nav>
+    <div class="hdr-actions">
+      <span id="pdf-actions" style="display:contents"></span>
+      <button class="tog no-print" id="tog" aria-label="Switch theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M21.6 12h-2.2M4.6 12H2.4M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6M18.8 18.8l-1.6-1.6M6.8 6.8L5.2 5.2"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 1 1 9.4 3.5a6.9 6.9 0 0 0 11.1 11.1z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
 
-	<!-- Scripts -->
-	<script src="assets/js/jquery.min.js"></script>
-	<script src="assets/js/jquery.scrollex.min.js"></script>
-	<script src="assets/js/browser.min.js"></script>
-	<script src="assets/js/breakpoints.min.js"></script>
-	<script src="assets/js/util.js"></script>
-	<script src="assets/js/main.js"></script>
+<main>
 
-	</body>
+  <!-- ============================ HERO ============================
+       The name runs on one line across the full content column, and the
+       row beneath splits into statement + a live "currently" block, so
+       the right-hand side is never left empty.
+  ============================================================== -->
+  <section class="hero spotlight" id="hero">
+    <div class="wrap g">
+      <div class="mg rv">Portfolio<em id="rev"></em></div>
+      <div class="rv d1">
+        <h1 class="nm"><span id="first"></span> <span class="last" id="last"></span></h1>
+        <ul class="byl" id="byl"></ul>
+        <div class="split">
+          <div>
+            <p class="stmt" id="stmt"></p>
+            <div class="cta" id="cta"></div>
+          </div>
+          <div class="nowcard" id="nowcard"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ WORK ============================ -->
+  <section id="work" class="spotlight">
+    <div class="wrap">
+      <div class="shead g rv" id="work-shead"></div>
+    </div>
+    <div class="wrap">
+      <div class="carousel rv d1" id="work-car">
+        <div class="scroller" id="tiles" tabindex="0" role="region" aria-label="Projects, scroll horizontally"></div>
+        <div class="cbar">
+          <button class="cbtn" data-prev aria-label="Previous projects">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button class="cbtn" data-next aria-label="More projects">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+          <div class="ctrack"><i></i></div>
+          <span class="ccount"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================== WRITING =========================== -->
+  <div class="band spotlight">
+    <section id="writing">
+      <div class="wrap">
+        <div class="shead g rv" id="writing-shead"></div>
+      </div>
+      <div class="wrap">
+        <div class="carousel rv d1" id="writing-car">
+          <div class="scroller" id="pieces" tabindex="0" role="region" aria-label="Writing, scroll horizontally"></div>
+          <div class="cbar">
+            <button class="cbtn" data-prev aria-label="Previous pieces">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <button class="cbtn" data-next aria-label="More pieces">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+            <div class="ctrack"><i></i></div>
+            <span class="ccount"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================== CAREER ===========================
+       The chart doubles as the full history. Every row is collapsed on
+       load; clicking one opens its full detail in place, right beneath
+       the bar, rather than sending the reader to a separate page.
+  ============================================================== -->
+  <section id="career" class="spotlight">
+    <div class="wrap">
+      <div class="shead g rv" id="career-shead"></div>
+      <div class="g rv" style="margin-bottom:16px">
+        <div class="mg"></div>
+        <div><button class="rd" id="expand-all" type="button">Expand all</button></div>
+      </div>
+      <div class="chart rv d1" id="chart"></div>
+    </div>
+  </section>
+
+  <!-- ======================== AT A GLANCE ========================= -->
+  <div class="band spotlight">
+    <section id="skills">
+      <div class="wrap">
+        <div class="shead g rv" id="skills-shead"></div>
+      </div>
+      <div class="wrap glance rv d1" id="glance" aria-label="At a glance"></div>
+    </section>
+  </div>
+
+  <!-- ======================== EDUCATION ========================= -->
+  <section id="education" class="spotlight">
+    <div class="wrap">
+      <div class="shead g rv" id="education-shead"></div>
+      <div id="edu"></div>
+    </div>
+  </section>
+
+  <!-- =========================== ABOUT ============================ -->
+  <div class="band spotlight">
+    <section id="about">
+      <div class="wrap">
+        <div class="shead g rv" id="about-shead"></div>
+        <div class="g rv d1">
+          <div class="mg" id="about-mg"></div>
+          <div class="prose" id="abt"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<footer class="spotlight">
+  <div class="wrap in">
+    <span class="copy" id="copy"></span>
+    <span id="links"></span>
+  </div>
+</footer>
+
+<!-- the printable sheet, built from the same data -->
+<div id="sheet"></div>
+
+<script src="site-data.js"></script>
+<script src="app.js"></script>
+<script>
+(function () {
+  "use strict";
+  document.body.classList.remove('no-js');
+  var d = window.SITE, $ = function (s) { return document.querySelector(s); };
+  var esc = UI.esc;
+  /* every outbound link opens in its own tab so the portfolio is never lost */
+  var EXT = ' target="_blank" rel="noopener noreferrer"';
+
+  /* Builds a section's number + heading + byline + rule block. The number
+     is always the call's own position (1-6), never read from data or
+     typed by hand — reordering which section a heading belongs to is a
+     page-structure change, not a content edit, so it isn't something
+     site-data.js tracks. byline is optional: an empty string simply
+     leaves the <p> out, matching how availability.text works. */
+  function shead(num, heading, byline, subtitle) {
+    var n = num < 10 ? '0' + num : '' + num;
+    return '<div class="no">' + n + '<em>' + esc(subtitle) + '</em></div>' +
+      '<div><h2>' + esc(heading) + '</h2>' +
+      (byline ? '<p>' + esc(byline) + '</p>' : '') +
+      '<div class="line"></div></div>';
+  }
+
+  UI.theme();
+
+  /* ---- header: nav + signature + pdf buttons ---- */
+  $('#sig-name').textContent = d.name.first + ' ' + d.name.last;
+  $('#nav').innerHTML =
+    d.nav.map(function (n) { return '<a href="' + esc(n.href) + '">' + esc(n.text) + '</a>'; }).join('') +
+    '<span id="ink"></span>';
+  /* Two fixed, named slots rather than a list — each button drives its
+     own distinct behaviour (toggle the preview / open the print dialog),
+     so unlike nav or heroButtons there's nothing to reorder or add to,
+     just enabled/text/style per slot. Left out of the markup entirely
+     when disabled, matching availability.text's pattern, rather than
+     rendered hidden or empty. */
+  function pdfBtn(id, cfg, extraAttrs) {
+    if (!cfg.enabled) return '';
+    return '<button class="btn' + (cfg.style === 'solid' ? ' solid' : '') + ' no-print" id="' + id + '"' +
+      (extraAttrs || '') + '>' + esc(cfg.text) + '</button>';
+  }
+  $('#pdf-actions').innerHTML =
+    pdfBtn('preview', d.pdfButtons.preview, ' style="margin-left:6px"') +
+    pdfBtn('print', d.pdfButtons.save, ' title="In the dialog, open &quot;More settings&quot; and enable &quot;Background graphics&quot; to keep the colour"');
+
+  /* ---- hero ---- */
+  $('#first').textContent = d.name.first;
+  $('#last').textContent  = d.name.last;
+  $('#rev').textContent   = d.rev;
+  $('#stmt').textContent  = d.statement;
+  $('#byl').innerHTML     = d.title.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
+  $('#sig-role').textContent = d.title.slice(0, 2).join(' · ');
+  $('#cta').innerHTML = d.heroButtons.map(function (b) {
+    return '<a class="btn' + (b.style === 'solid' ? ' solid' : '') + '" href="' + esc(b.href) + '">' + esc(b.text) + '</a>';
+  }).join('');
+
+  /* One orchestrated moment on first paint, not a scroll effect — the name
+     is above the fold, so it plays immediately rather than waiting on the
+     .rv/IntersectionObserver machinery the rest of the page uses. Off
+     entirely under reduced motion: the name then stays exactly what
+     textContent already put there, two frames up, with no split markup
+     added at all. */
+  if (!UI.calm) (function () {
+    function splitLetters(el) {
+      var text = el.textContent;
+      el.textContent = '';
+      var frag = document.createDocumentFragment();
+      for (var i = 0; i < text.length; i++) {
+        var s = document.createElement('span');
+        s.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+        frag.appendChild(s);
+      }
+      el.appendChild(frag);
+      return [].slice.call(el.children);
+    }
+    var nm = document.querySelector('.nm');
+    var spans = splitLetters($('#first')).concat(splitLetters($('#last')));
+    spans.forEach(function (s, i) { s.style.transitionDelay = (i * 28) + 'ms'; });
+    nm.classList.add('nmstagger');
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { nm.classList.add('nmstagger-in'); });
+    });
+  })();
+
+  /* the "currently" block is derived from the first career role, so it can
+     never fall out of date relative to the chart below. The "Open to
+     roles" line is separate — it's a personal availability flag, not
+     tied to any one employer — and is entirely optional: when
+     availability.open is false, the line is left out of the markup
+     rather than rendered empty or hidden, so the card just ends cleanly
+     after the location/since line with no leftover gap. */
+  var cur = d.career.roles[0];
+  var avail = d.availability;
+  $('#nowcard').innerHTML =
+    '<h4>Currently</h4>' +
+    '<p class="r">' + esc(cur.role) + '</p>' +
+    '<p class="c">at <b>' + esc(cur.company) + '</b></p>' +
+    '<p class="w">' + esc(cur.where) + ' · since ' + Math.floor(cur.from) + '</p>' +
+    (avail && avail.open ? '<span class="open"><i></i>' + esc(avail.text) + '</span>' : '');
+
+  /* ---- work carousel ---- */
+  var TONES = ['tone-ink', 'tone-accent', 'tone-plain', 'tone-sink'];
+  $('#work-shead').innerHTML = shead(1, d.work.heading, d.work.byline, d.work.items.length + ' ' + d.work.countLabel);
+  $('#tiles').innerHTML = d.work.items.map(function (w, i) {
+    return '<a class="card ' + TONES[i % TONES.length] + '" href="' + esc(w.href) + '"' + EXT + '>' +
+      '<span class="arw" aria-hidden="true">&#8599;</span>' +
+      '<em>' + esc(w.meta) + '</em><b>' + esc(w.title) + '</b><p>' + esc(w.line) + '</p></a>';
+  }).join('');
+
+  if (!UI.calm) [].forEach.call(document.querySelectorAll('.card'), function (c) {
+    c.addEventListener('pointermove', function (e) {
+      var r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      c.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
+
+  /* ---- writing carousel ---- */
+  $('#writing-shead').innerHTML = shead(2, d.writing.heading, d.writing.byline, d.writing.items.length + ' ' + d.writing.countLabel);
+  $('#pieces').innerHTML = d.writing.items.map(function (p) {
+    return '<article class="qcard">' +
+      '<div class="form"><span>' + esc(p.form) + '</span><span>' + esc(p.length) + '</span></div>' +
+      '<h3>' + esc(p.title) + '</h3>' +
+      '<p class="ex">' + esc(p.excerpt) + '</p>' +
+      '<a class="rd" href="' + esc(p.href) + '"' + EXT + ' style="margin-top:20px; align-self:flex-start">' +
+        esc(d.writing.readMoreText) + ' <span class="ar">&rarr;</span></a>' +
+      '</article>';
+  }).join('');
+
+  UI.carousel($('#work-car'));
+  UI.carousel($('#writing-car'));
+
+  /* ---- career: rows expand in place, every one collapsed on load ---- */
+  $('#career-shead').innerHTML = shead(3, d.career.heading, d.career.byline, d.career.roles.length + ' ' + d.career.countLabel);
+  $('#expand-all').textContent = d.career.expandAllText;
+  UI.chart($('#chart'), d.career, { expand: true });
+
+  /* ---- at a glance + education ---- */
+  $('#skills-shead').innerHTML = shead(4, d.glance.heading, d.glance.byline, d.glance.subtitle);
+  UI.glance($('#glance'), d.glance);
+  $('#education-shead').innerHTML = shead(5, d.education.heading, d.education.byline, d.education.subtitle);
+  $('#edu').innerHTML = d.education.items.map(function (e) {
+    return '<div class="job g rv">' +
+      '<div class="mg"><b>' + esc(e.school) + '</b><span class="meta">' + esc(e.dates) + '</span></div>' +
+      '<div><p class="role">' + esc(e.award) + '</p><p class="sum">' + esc(e.note) + '</p></div></div>';
+  }).join('');
+
+  /* ---- about + footer ---- */
+  $('#about-shead').innerHTML = shead(6, d.about.heading, d.about.byline, d.about.subtitle);
+  $('#about-mg').innerHTML = esc(d.about.marginLabel) + '<em>' + esc(d.about.marginNote) + '</em>';
+  $('#abt').innerHTML = d.about.paragraphs.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('');
+
+  $('#copy').innerHTML =
+    'Copyright &copy; ' + esc(d.name.first + ' ' + d.name.last) +
+    ' <span class="sep">|</span> ' +
+    '<a class="em" href="mailto:' + esc(d.contact[0].text) + '">' + esc(d.contact[0].text) + '</a>';
+
+  /* Recognisable brand marks rather than plain text labels — sourced from
+     Bootstrap Icons (LinkedIn, Medium) and a faithful community redraw of
+     the itch.io mark, each reduced to a single currentColor path so they
+     pick up the same hover colour as any other footer link. */
+  var SOCIAL_ICON = {
+    'itch.io': '<svg class="ic-itch" viewBox="0 0 32 32" aria-hidden="true"><path fill="currentColor" d="M16 5c-3.252 0-7.688.05-8.588.13-1.01.607-3.01 2.901-3.03 3.497v1C4.383 10.89 5.567 12 6.638 12 7.92 12 8.99 10.93 8.99 9.668 8.99 10.93 10.03 12 11.312 12c1.293 0 2.293-1.069 2.293-2.332 0 1.262 1.09 2.332 2.383 2.332h.022c1.293 0 2.383-1.069 2.383-2.332 0 1.262 1.01 2.332 2.293 2.332 1.283 0 2.324-1.069 2.324-2.332 0 1.262 1.07 2.332 2.353 2.332 1.071 0 2.252-1.11 2.252-2.373v-1c-.02-.596-2.02-2.89-3.03-3.496C21.445 5.02 19.253 5 16 5zm-2.45 6.742c-1.052 1.81-3.698 1.832-4.73.012-.63 1.092-2.056 1.514-2.666 1.307-.178 1.899-.3 11.648.992 13.283 3.797.885 14.019.866 17.708 0 1.495-1.524 1.16-11.522.992-13.283-.61.207-2.037-.215-2.657-1.307-1.043 1.82-3.688 1.798-4.74-.012-.325.59-1.082 1.367-2.449 1.367a2.73 2.73 0 01-2.45-1.367zM11.42 14c.8 0 1.53 0 2.41.98 1.45-.15 2.89-.15 4.34 0 .89-.97 1.61-.97 2.41-.97 2.58 0 3.2 3.81 4.13 7.09.84 3.05-.28 3.13-1.67 3.13-2.07-.08-3.22-1.58-3.22-3.09-1.93.32-5.01.44-7.64 0 0 1.51-1.15 3.01-3.22 3.09-1.39 0-2.51-.08-1.67-3.13.93-3.3 1.55-7.09 4.13-7.09V14zM16 16.877s-1.694 1.562-2 2.107l1.107-.04v.966c0 .058.819.008.893.008.447.017.893.033.893-.008v-.967l1.107.041c-.306-.546-2-2.107-2-2.107z"/></svg>',
+    'LinkedIn': '<svg class="ic-in" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"/></svg>',
+    'Medium': '<svg class="ic-med" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M9.025 8c0 2.485-2.02 4.5-4.513 4.5A4.506 4.506 0 0 1 0 8c0-2.486 2.02-4.5 4.512-4.5A4.506 4.506 0 0 1 9.025 8m4.95 0c0 2.34-1.01 4.236-2.256 4.236S9.463 10.339 9.463 8c0-2.34 1.01-4.236 2.256-4.236S13.975 5.661 13.975 8M16 8c0 2.096-.355 3.795-.794 3.795-.438 0-.793-1.7-.793-3.795 0-2.096.355-3.795.794-3.795.438 0 .793 1.699.793 3.795"/></svg>'
+  };
+  $('#links').innerHTML = d.contact.slice(1).map(function (c) {
+    return '<a class="soc" href="' + esc(c.href) + '"' + EXT + ' aria-label="' + esc(c.text) + '">' +
+      (SOCIAL_ICON[c.text] || esc(c.text)) + '</a>';
+  }).join('');
+
+  /* ---- spotlight + magnetic buttons, page-wide ----------------------
+     One shared pointermove on document rather than per-element listeners:
+     cheap even with several dozen candidate buttons, since it's just
+     arithmetic per move, and it's the only way the spotlight can hand off
+     between sections at all (see below). Queried here, after every piece
+     of dynamic content above has rendered, so it also catches buttons
+     that don't exist until now — the writing cards' "Read the rest"
+     links chief among them. Off entirely on touch and under reduced
+     motion, same FINE && !UI.calm convention as the chart hover guide
+     further down. The print sheet is deliberately excluded — #sheet is
+     for the PDF, never seen on screen, so neither effect has anything to
+     do there. */
+  if (UI.fine && !UI.calm) (function () {
+    var spots = [].slice.call(document.querySelectorAll('.spotlight'));
+    var magnets = [].slice.call(document.querySelectorAll('.btn, .rd, .cbtn, .tog'));
+    var radius = 70, pull = 0.3;
+    var activeSpot = null;
+
+    document.addEventListener('pointermove', function (e) {
+      var target = e.target.closest ? e.target.closest('.spotlight') : null;
+      if (target !== activeSpot) {
+        if (activeSpot) activeSpot.classList.remove('spot-on');
+        activeSpot = target;
+        if (activeSpot) {
+          var er = activeSpot.getBoundingClientRect();
+          activeSpot.classList.add('spot-snap');
+          activeSpot.style.setProperty('--mx', ((e.clientX - er.left) / er.width * 100) + '%');
+          activeSpot.style.setProperty('--my', ((e.clientY - er.top) / er.height * 100) + '%');
+          void activeSpot.offsetWidth; /* force the snap to commit before re-enabling the glide */
+          activeSpot.classList.add('spot-on');
+          /* captured by reference so a quick re-entry of the same section
+             before these frames fire still clears the right element's
+             snap class, not whatever activeSpot has since become */
+          (function (el) {
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () { el.classList.remove('spot-snap'); });
+            });
+          })(activeSpot);
+        }
+      } else if (activeSpot) {
+        var r = activeSpot.getBoundingClientRect();
+        activeSpot.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+        activeSpot.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+      }
+      magnets.forEach(function (b) {
+        var br = b.getBoundingClientRect();
+        var dx = e.clientX - (br.left + br.width / 2), dy = e.clientY - (br.top + br.height / 2);
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < radius) {
+          var p = 1 - dist / radius;
+          b.style.setProperty('--magx', (dx * p * pull) + 'px');
+          b.style.setProperty('--magy', (dy * p * pull) + 'px');
+        } else {
+          b.style.setProperty('--magx', '0px');
+          b.style.setProperty('--magy', '0px');
+        }
+      });
+    });
+    document.addEventListener('pointerleave', function () {
+      if (activeSpot) activeSpot.classList.remove('spot-on');
+      activeSpot = null;
+      magnets.forEach(function (b) { b.style.setProperty('--magx', '0px'); b.style.setProperty('--magy', '0px'); });
+    });
+  })();
+
+  /* =========================== THE SHEET ===========================
+     Same data, entirely separate layout. The accent rule and the red
+     name block carry over from the site; skill tiers don't — a printed
+     page can't hover, and the tooltip is exactly what tells the level
+     on the page itself, so Disciplines and Tools print as plain chips
+     with no colour or grouping standing in for it.
+  ================================================================= */
+  function chipsList(g) {
+    return '<div class="chips">' +
+      g.items.map(function (i) { return '<span class="chip">' + esc(i.name) + '</span>'; }).join('') +
+      '</div>';
+  }
+
+  $('#sheet').innerHTML =
+    '<div class="ph">' +
+      '<div><h1>' + esc(d.name.first) + ' <span class="last">' + esc(d.name.last) + '</span></h1>' +
+        '<div class="t">' + d.title.map(esc).join(' · ') + '</div></div>' +
+      '<div class="c">' + d.contact.map(function (c) { return '<a href="' + esc(c.href) + '">' + esc(c.text) + '</a>'; }).join('<br>') + '</div>' +
+    '</div>' +
+    '<div class="rule"></div>' +
+    '<p class="pitch">' + esc(d.statement) + '</p>' +
+    '<div class="grid"><div class="main"><h2>EXPERIENCE</h2>' +
+      d.career.roles.map(function (r) {
+        return '<div class="job"><div class="tl"><i></i></div><div class="jbody">' +
+          '<div class="r1"><span class="co">' + esc(r.company) + '</span>' +
+          '<span class="dt">' + esc(r.dates) + '</span></div>' +
+          '<div class="ti">' + esc(r.role) + '</div><ul>' +
+          (r.print || []).map(function (b) { return '<li>' + esc(b) + '</li>'; }).join('') +
+          '</ul></div></div>';
+      }).join('') +
+    '</div><div class="side">' +
+      d.glance.groups.filter(function (g) {
+        return ['Disciplines', 'Tools'].indexOf(g.label) > -1;
+      }).map(function (g) {
+        return '<section><h2>' + esc(g.label).toUpperCase() + '</h2>' + chipsList(g) + '</section>';
+      }).join('') +
+      (function () {
+        var picked = d.work.items.filter(function (w) { return w.pdf; });
+        if (!picked.length) return '';
+        return '<section><h2>PROJECTS</h2><div class="proj">' +
+          picked.map(function (w) {
+            return '<div class="p"><div class="pt"><a href="' + esc(w.href) + '">' + esc(w.title) + '</a></div>' +
+              '<div class="pm">' + esc(w.meta) + '</div>' +
+              '<div class="pl">' + esc(w.line) + '</div></div>';
+          }).join('') + '</div></section>';
+      })() +
+      '<section><h2>EDUCATION</h2>' + d.education.items.map(function (e) {
+        return '<div class="ed"><b>' + esc(e.award) + '</b><span>' + esc(e.school) + ', ' +
+          esc(e.dates) + '</span><em>' + esc(e.note) + '</em></div>';
+      }).join('') + '</section>' +
+    '</div></div>';
+
+  /* ---- export -------------------------------------------------------
+     The document title becomes the suggested filename in the save dialog,
+     so it is set just for the export and restored straight after. Both
+     buttons are optional — see pdfButtons above — so every reference
+     here is guarded rather than assuming either exists. */
+  var TITLE = document.title;
+  var printBtn = $('#print'), previewBtn = $('#preview');
+  if (printBtn) printBtn.addEventListener('click', function () {
+    /* Belt and suspenders alongside the @media screen scoping above:
+       leaving preview mode before printing means there's nothing left
+       for the print CSS to have to override in the first place. */
+    if (document.body.classList.contains('preview')) {
+      document.body.classList.remove('preview');
+      if (previewBtn) previewBtn.textContent = d.pdfButtons.preview.text;
+    }
+    document.title = d.name.first + ' ' + d.name.last + ' — CV';
+    window.print();
+    setTimeout(function () { document.title = TITLE; }, 800);
+  });
+  if (previewBtn) previewBtn.addEventListener('click', function (e) {
+    var on = document.body.classList.toggle('preview');
+    e.target.textContent = on ? 'Back to page' : d.pdfButtons.preview.text;
+    scrollTo(0, 0);
+  });
+  if (printBtn && new URLSearchParams(location.search).has('print')) {
+    setTimeout(function () { printBtn.click(); }, 700);
+  }
+
+  UI.reveal();
+  UI.nav();
+  UI.progress();
+})();
+</script>
+</body>
 </html>

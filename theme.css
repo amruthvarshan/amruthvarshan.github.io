@@ -1,0 +1,706 @@
+/* ============================================================================
+   theme.css — THE THEME LAYER
+   ----------------------------------------------------------------------------
+   Contents
+     1.  Tokens (colour, type, space, motion)
+     2.  Reset & base
+     3.  Motion primitives  (reveal, progress, reduced-motion)
+     4.  Header & nav
+     5.  Grid system        (.wrap / .g / .mg / .shead)
+     6.  Hero
+     7.  At a glance band
+     8.  Carousel           (work + writing)
+     9.  Career chart
+     10. Buttons & links
+     11. Prose blocks
+     12. Footer
+     13. CV page extras
+     14. Responsive
+     15. Print
+
+   Everything is driven by the tokens in §1. Change a token, the whole
+   site follows. No colour is hard-coded anywhere below §1.
+   ========================================================================== */
+
+/* ============================================================
+   1. TOKENS
+   ============================================================ */
+:root{
+  /* --- light palette --- */
+  --paper:#FAF8F2;          /* page background                       */
+  --raise:#F3F0E6;          /* banded sections, hover fills          */
+  --sink:#EDE9DC;           /* deepest neutral fill                  */
+  --ink:#14130F;            /* primary text, solid blocks            */
+  --ink-2:#3B3930;          /* body text                             */
+  --muted:#7A7769;          /* secondary text                        */
+  --faint:#A5A292;          /* labels, axis, margin notes            */
+  --rule:#E0DACB;           /* structural hairlines                  */
+  --rule-2:#EBE6D8;         /* soft dividers, empty track            */
+  --accent:#C2352B;         /* the single accent — editorial red     */
+  --accent-ink:#FAF8F2;     /* text on accent                        */
+  --block-ink:#FAF8F2;      /* text on --ink blocks                  */
+  --lift:0 16px 38px rgba(20,19,15,.14);
+
+  /* --- geometry --- */
+  --pad:clamp(20px,4vw,56px);   /* page side padding                 */
+  --gutter:158px;               /* the margin column                 */
+  --gap:44px;                   /* margin column → content gap       */
+  --max:1280px;
+
+  /* --- motion --- */
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --spring:cubic-bezier(.2,.9,.3,1);
+  --overshoot:cubic-bezier(.34,1.56,.64,1); /* actually bounces past 1 — for one-shot grow-ins only */
+  --fast:.2s; --mid:.34s; --slow:.7s;
+}
+
+html[data-theme="dark"]{
+  --paper:#131310;
+  --raise:#1A1915;
+  --sink:#22201B;
+  --ink:#EDE9DC;
+  --ink-2:#CFCAB9;
+  --muted:#8B8878;
+  --faint:#6E6B5E;
+  --rule:rgba(237,233,220,.16);
+  --rule-2:rgba(237,233,220,.08);
+  --accent:#E8624F;
+  --accent-ink:#131310;
+  --block-ink:#131310;
+  --lift:0 16px 44px rgba(0,0,0,.55);
+}
+
+/* The theme crossfade. Added for half a second during a switch, then
+   removed — so it never slows down ordinary hover transitions. */
+html.theming, html.theming *{
+  transition:background-color .5s ease, color .5s ease, border-color .5s ease,
+             fill .5s ease, stroke .5s ease, box-shadow .5s ease !important;
+}
+
+/* ============================================================
+   2. RESET & BASE
+   ============================================================ */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font:400 17px/1.62 "Inter Tight",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden;
+}
+a{color:inherit; text-decoration:none}
+button{font:inherit; color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:4px; border-radius:2px}
+::selection{background:var(--accent); color:var(--accent-ink)}
+.wrap{max-width:var(--max); margin:0 auto; padding:0 var(--pad)}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+/* ============================================================
+   3. MOTION PRIMITIVES
+   ============================================================ */
+.rv{opacity:0; transform:translateY(15px);
+  transition:opacity var(--slow) var(--ease), transform var(--slow) var(--ease)}
+.rv.in{opacity:1; transform:none}
+.rv.d1{transition-delay:.07s} .rv.d2{transition-delay:.14s} .rv.d3{transition-delay:.21s}
+.no-js .rv{opacity:1; transform:none}
+
+#prog{position:fixed; top:0; left:0; height:2px; width:100%; transform:scaleX(0);
+  transform-origin:0 50%; background:var(--accent); z-index:200; pointer-events:none}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rv{opacity:1!important; transform:none!important; transition:none!important}
+  #prog{display:none}
+  *,*::before,*::after{transition-duration:.01ms!important; animation-duration:.01ms!important}
+}
+
+/* ============================================================
+   4. HEADER & NAV
+   ============================================================ */
+header{position:sticky; top:0; z-index:150;
+  background:color-mix(in srgb, var(--paper) 86%, transparent);
+  backdrop-filter:blur(12px) saturate(1.3);
+  border-bottom:1px solid var(--rule)}
+header .wrap{display:flex; align-items:center; gap:20px; height:66px}
+.sig{font:500 16px/1 "Inter Tight",sans-serif; letter-spacing:-.01em; white-space:nowrap}
+.sig i{font-style:normal; color:var(--muted); font-weight:400; margin-left:10px}
+nav{position:relative; margin-left:auto; display:flex; gap:2px; align-items:center}
+nav a{position:relative; padding:9px 13px; font:400 15px/1 "Inter Tight",sans-serif;
+  color:var(--muted); transition:color var(--fast)}
+nav a:hover, nav a[aria-current="true"]{color:var(--ink)}
+#ink{position:absolute; bottom:2px; left:0; height:2px; width:0; background:var(--accent);
+  border-radius:1px; opacity:0;
+  transition:transform var(--mid) var(--spring), width var(--mid) var(--spring), opacity var(--fast)}
+.tog{margin-left:10px; width:38px; height:38px; flex:none; display:grid; place-items:center;
+  border:1px solid var(--rule); border-radius:50%; background:transparent; cursor:pointer;
+  transform:translate(var(--magx,0px),var(--magy,0px));
+  transition:border-color var(--fast), transform var(--mid) cubic-bezier(.3,1.5,.5,1)}
+.tog:hover{border-color:var(--accent); transform:translate(var(--magx,0px),var(--magy,0px)) rotate(-28deg)}
+.tog svg{width:17px; height:17px}
+.tog .moon{display:none}
+html[data-theme="dark"] .tog .sun{display:none}
+html[data-theme="dark"] .tog .moon{display:block}
+/* Invisible at desktop — display:contents removes this wrapper from the
+   box tree entirely, so preview/save/tog stay true flex children of
+   header .wrap, laid out exactly as if this div weren't there. It only
+   becomes a real box at the mobile breakpoint below, where it's turned
+   into one deliberate row instead of three items independently deciding
+   whether they fit. */
+.hdr-actions{display:contents}
+
+/* ============================================================
+   5. GRID SYSTEM
+   The whole site is one two-column grid: a narrow right-aligned
+   margin column for metadata, and a content column. Every
+   section obeys it, so the eye learns one scanning position.
+   ============================================================ */
+.g{display:grid; grid-template-columns:var(--gutter) 1fr; gap:var(--gap)}
+.mg{font:400 12.5px/1.55 "Inter Tight",sans-serif; color:var(--faint); text-align:right}
+.mg em{font-style:normal; display:block; color:var(--accent)}
+.mg b{display:block; font:600 19px/1.2 "Newsreader",serif; color:var(--ink)}
+.mg span{display:block}
+
+/* Sections are separated by air and a drawn rule, never by a bare <hr>. */
+section{padding:clamp(56px,7.4vw,100px) 0}
+/* Hero and Work are both plain (unbanded) sections, so without this they'd
+   run together with nothing but whitespace between them — every other
+   section boundary already gets a seam for free from .band's own border.
+   Uses the adjacent-sibling combinator rather than #work directly, so it
+   keeps working if a section ever gets reordered or renamed. */
+.hero + section{border-top:1px solid var(--rule)}
+.shead{margin-bottom:clamp(30px,4vw,48px)}
+.shead .no{font:400 12.5px/1.55 "Inter Tight",sans-serif; color:var(--faint); text-align:right; padding-top:6px}
+.shead .no em{font-style:normal; display:block; color:var(--accent)}
+.shead h2{font:400 clamp(27px,3.4vw,42px)/1.05 "Newsreader",serif;
+  letter-spacing:-.02em; margin:0}
+.shead p{margin:10px 0 0; font:400 15.5px/1.55 "Inter Tight",sans-serif; color:var(--muted); max-width:52ch}
+.shead .line{height:1px; background:var(--rule); margin-top:22px;
+  transform:scaleX(0); transform-origin:0 50%; transition:transform 1.1s var(--ease) .15s}
+.rv.in .line, .shead.in .line{transform:scaleX(1)}
+
+/* ============================================================
+   6. HERO
+   ============================================================ */
+/* Raised like the alternating bands below (Writing/Skills/About), so the
+   rhythm holds from the very top: hero and Work were both plain paper,
+   the only adjacent pair on the page that didn't alternate. No border-top
+   here to match — the header already draws its own border-bottom right
+   above, and .hero + section already draws the separating line below. */
+.hero{padding:clamp(48px,7.5vw,96px) 0 clamp(40px,6vw,76px); background:var(--raise)}
+/* Registering --mx/--my lets the browser treat them as real animatable
+   percentages rather than opaque strings, which is what makes the
+   transition below actually glide instead of snapping straight to the
+   new value — this is the whole mechanism behind the glow feeling like
+   one continuous light gliding across the page rather than a series of
+   independent per-section flicks. */
+@property --mx{syntax:"<percentage>"; inherits:true; initial-value:50%}
+@property --my{syntax:"<percentage>"; inherits:true; initial-value:0%}
+/* Applied to every major section (see the page-wide pointermove handler) —
+   not hover-triggered like .card, since with several of these stacked
+   down the page there's always exactly one "current" section rather than
+   a clear in/out edge. JS toggles .spot-on on whichever section the
+   pointer is actually over, so entering a new one fades its glow in
+   while the previous one fades out — two ordinary opacity transitions
+   overlapping, which is what makes the handoff between sections read as
+   one glow moving rather than one switching off and another switching on. */
+.spotlight{position:relative; isolation:isolate}
+.spotlight::before{content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  opacity:0; transition:opacity .5s var(--ease), --mx .6s var(--ease), --my .6s var(--ease);
+  background:radial-gradient(560px circle at var(--mx) var(--my),
+    color-mix(in srgb, var(--accent) 8%, transparent), transparent 68%)}
+.spotlight.spot-on::before{opacity:1}
+/* On entry into a section, the JS positions the glow here BEFORE fading
+   it in — without this override, --mx/--my's own .6s transition would
+   still be running, so the glow would visibly glide in from wherever it
+   was last left in this section (possibly seconds ago, off in a corner)
+   rather than simply appearing where the cursor actually entered. This
+   class drops the position transition for exactly one frame so that
+   first placement is instant; only opacity still eases in. */
+.spotlight.spot-snap::before{transition:opacity .5s var(--ease)}
+.nm{font:400 clamp(46px,9.6vw,124px)/.94 "Newsreader",serif;
+  letter-spacing:-.028em; margin:0}
+/* Per-letter reveal, wired up once on load by the hero script — JS builds
+   these spans and adds .nmstagger-in a frame later; if JS never runs (or
+   reduced motion is on, see RESPONSIVE below) the name stays as plain,
+   fully visible text with none of this markup, per the motion contract.
+   Named .nmstagger rather than the more obvious "split" specifically
+   because .split already exists as the hero's own two-column layout class
+   below the name — reusing it here would grid-ify the name itself and
+   blockify its span children, which is exactly the bug this avoids.
+   Selector is "span span" (two levels), not "span" — the letter-spans
+   sit two deep (.nm > #first/#last > letter), so a plain descendant
+   "span" would also match #first and #last themselves and, being more
+   specific than ".nm .last", silently win their own transition property —
+   which is exactly what was overriding .last's hover transition and
+   making it feel instant/abrupt instead of eased. */
+.nm.nmstagger span span{display:inline-block; opacity:0; transform:translateY(16px);
+  transition:opacity .5s var(--ease), transform .5s var(--ease)}
+.nm.nmstagger.nmstagger-in span span{opacity:1; transform:none}
+.nm .last{display:inline-block; background:var(--accent); color:var(--accent-ink);
+  padding:.15em .15em .015em; margin-top:.05em;
+  transition:transform .6s var(--ease), letter-spacing .6s var(--ease)}
+.nm:hover .last{transform:translateX(7px); letter-spacing:.006em}
+.byl{display:flex; flex-wrap:wrap; gap:0 17px; margin:24px 0 0; padding:0; list-style:none}
+.byl li{font:700 clamp(16px,1.6vw,21px)/1 "Inter Tight",sans-serif; color:var(--ink); position:relative; padding-left:18px}
+.byl li:first-child{padding-left:0}
+.byl li:not(:first-child)::before{content:""; position:absolute; left:0; top:50%; transform:translateY(-50%);
+  width:1px; height:12px; background:var(--rule)}
+.stmt{font:300 clamp(23px,3vw,36px)/1.36 "Newsreader",serif; color:var(--ink-2);
+  max-width:22ch; margin:0; letter-spacing:-.01em}
+
+/* The hero splits below the name so the full width is used: statement on the
+   left, a small live "currently" block on the right. */
+.split{display:grid; grid-template-columns:1.25fr .75fr; gap:var(--gap);
+  align-items:start; margin-top:clamp(30px,4vw,50px);
+  padding-top:clamp(26px,3vw,38px); border-top:1px solid var(--rule)}
+.nowcard h4{font:500 10.5px/1 "Inter Tight",sans-serif; letter-spacing:.17em; text-transform:uppercase;
+  color:var(--faint); margin:0 0 13px}
+.nowcard .r{font:600 21px/1.2 "Newsreader",serif; margin:0}
+.nowcard .c{font:400 15px/1.5 "Inter Tight",sans-serif; color:var(--ink-2); margin:5px 0 0}
+.nowcard .c b{font-weight:500; color:var(--accent)}
+.nowcard .w{font:400 13.5px/1.5 "Inter Tight",sans-serif; color:var(--muted); margin:3px 0 0}
+.nowcard .open{display:inline-flex; align-items:center; gap:8px; margin-top:16px;
+  font:400 13.5px/1 "Inter Tight",sans-serif; color:var(--muted)}
+.nowcard .open i{width:7px; height:7px; border-radius:50%; background:var(--accent); flex:none}
+
+/* ============================================================
+   7. AT A GLANCE
+   A horizontal band, not a rail — it fills the width under the
+   hero instead of stretching the hero vertically.
+   ============================================================ */
+.band{background:var(--raise); border-top:1px solid var(--rule); border-bottom:1px solid var(--rule)}
+.glance{display:grid; grid-template-columns:auto repeat(5,minmax(0,230px)); justify-content:space-between;
+  gap:clamp(20px,2.6vw,40px); padding-block:clamp(30px,4vw,44px); align-items:start}
+.lead{padding-right:clamp(18px,2.4vw,34px); border-right:1px solid var(--rule)}
+.lead b{display:block; font:400 clamp(42px,5vw,60px)/.9 "Newsreader",serif; letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums}
+.lead b i{font-style:normal; font-size:.36em; color:var(--muted); margin-left:.22em; letter-spacing:0}
+/* Child combinator, not descendant — .num sits two levels deep (inside b),
+   so a plain ".lead span" would also catch it and override its size and
+   colour down to the note line's small muted style. Scoping to a direct
+   child means it only ever matches the actual note span, regardless of
+   what .num or anything else inside b is later named. */
+.lead > span{display:block; font:400 13px/1.4 "Inter Tight",sans-serif; color:var(--muted); margin-top:9px; max-width:14ch}
+.grp h4{font:500 10.5px/1 "Inter Tight",sans-serif; letter-spacing:.17em; text-transform:uppercase;
+  color:var(--faint); margin:0 0 11px}
+/* Chips, not a stacked list — the same fix that made the CV section's
+   tags and the PDF's Tools list readable: flowing items in a line need
+   a real visual boundary per item, or they blur into one run-on line.
+   flex-wrap is what lets this same markup serve both layouts below —
+   narrow desktop columns naturally wrap one chip per line most of the
+   time (not enough width for two), and the wide mobile layout wraps
+   several per line — so crossing that breakpoint reflows the identical
+   chips rather than swapping to a different visual language. */
+.grp ul{list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; gap:8px}
+/* Filled, no border, no hover colour-shift — a border plus an accent-on-
+   hover state is literally .btn's own visual language, which is exactly
+   what made the CV tags read as clickable before that got fixed. Flat
+   fill reads as a static label instead, here as much as there. */
+.grp li{font:400 13.5px/1 "Inter Tight",sans-serif; color:var(--ink-2); background:var(--sink);
+  padding:6px 12px; border-radius:3px; transition:opacity var(--fast), transform var(--fast) var(--spring)}
+.grp li:hover{transform:scale(1.05)}
+.grp.dim li:not(:hover){opacity:.32}
+
+/* A tiered item's "hover for more" cue moves from a text-underline to a
+   dashed border on the chip itself. Underlining text that sits inside a
+   filled box collides with the box's own bottom edge — same pixel row,
+   one visually erasing the other — so the cue needs its own line to own;
+   the chip's border is that line, and a chip with no border to begin
+   with has nothing left for it to collide with. */
+.grp li.has-tip{position:relative; cursor:default; border:1px dashed var(--rule);
+  padding:5px 11px; transition:opacity var(--fast), border-color var(--fast), transform var(--fast) var(--spring)}
+.grp li.has-tip:hover{border-color:var(--muted)}
+.tip{position:absolute; left:0; bottom:calc(100% + 9px); z-index:5;
+  font:500 11.5px/1 "Inter Tight",sans-serif; color:var(--accent-ink); background:var(--accent);
+  padding:5px 9px; border-radius:3px; white-space:nowrap;
+  opacity:0; pointer-events:none; transform:translateY(4px);
+  transition:opacity var(--fast), transform var(--fast)}
+.tip::after{content:""; position:absolute; top:100%; left:12px;
+  border:5px solid transparent; border-top-color:var(--accent)}
+.has-tip:hover .tip, .has-tip:focus-visible .tip{opacity:1; transform:none}
+
+/* ============================================================
+   8. CAROUSEL
+   One component, two uses. Cards run off the right edge of the
+   page so the row reads as continuing rather than stopping.
+   ============================================================ */
+.carousel{position:relative}
+.scroller{
+  display:flex; overflow-x:auto; overflow-y:hidden;
+  scroll-snap-type:x mandatory; scroll-behavior:smooth;
+  scrollbar-width:none; -ms-overflow-style:none;
+  margin-right:calc(-1 * var(--pad)); padding-right:var(--pad);
+}
+.scroller::-webkit-scrollbar{display:none}
+.cbar{display:flex; align-items:center; gap:16px; margin-top:20px}
+.ctrack{position:relative; flex:1; height:2px; background:var(--rule-2)}
+.ctrack i{position:absolute; top:0; left:0; height:2px; background:var(--accent);
+  transition:transform var(--mid) var(--ease), width var(--mid) var(--ease)}
+.cbtn{width:40px; height:40px; flex:none; display:grid; place-items:center;
+  border:1px solid var(--rule); border-radius:50%; background:transparent; cursor:pointer;
+  transform:translate(var(--magx,0px),var(--magy,0px));
+  transition:border-color var(--fast), background-color var(--fast), transform var(--fast), opacity var(--fast)}
+.cbtn:hover:not(:disabled){border-color:var(--accent); color:var(--accent); transform:translate(var(--magx,0px),var(--magy,0px)) scale(1.07)}
+.cbtn:disabled{opacity:.3; cursor:default}
+.cbtn svg{width:15px; height:15px}
+.ccount{font:400 13px/1 "Inter Tight",sans-serif; color:var(--faint); white-space:nowrap}
+
+/* --- work card --- */
+.card{position:relative; isolation:isolate; overflow:hidden;
+  flex:0 0 clamp(252px,26vw,352px); scroll-snap-align:start;
+  min-height:262px; padding:26px 24px 28px;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  border-left:1px solid var(--rule);
+  transition:transform var(--mid) var(--spring), box-shadow var(--mid)}
+.card:first-child{border-left:0}
+.card::before{content:""; position:absolute; inset:0; z-index:-1; opacity:0;
+  background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),
+    color-mix(in srgb, currentColor 13%, transparent), transparent 70%);
+  transition:opacity var(--mid)}
+.card:hover{transform:translateY(-5px); box-shadow:var(--lift); z-index:2}
+.card:hover::before{opacity:1}
+.card em{font-style:normal; font:500 12.5px/1 "Inter Tight",sans-serif; opacity:.72; margin-bottom:11px}
+.card b{font:400 clamp(25px,2.4vw,31px)/1.05 "Newsreader",serif; letter-spacing:-.012em}
+.card p{margin:10px 0 0; font:400 14.5px/1.5 "Inter Tight",sans-serif; opacity:.84}
+.card .arw{position:absolute; top:22px; right:22px; font-size:19px; opacity:0;
+  transform:translate(-7px,7px); transition:opacity var(--mid), transform var(--mid)}
+.card:hover .arw{opacity:.85; transform:none}
+.tone-ink{background:var(--ink); color:var(--block-ink)}
+.tone-accent{background:var(--accent); color:var(--accent-ink)}
+.tone-plain{background:transparent; color:var(--ink)}
+.tone-plain:hover{background:var(--raise)}
+.tone-sink{background:var(--sink); color:var(--ink)}
+
+/* --- writing card --- */
+.qcard{flex:0 0 clamp(290px,36vw,470px); scroll-snap-align:start;
+  padding:28px 30px 30px; border-left:1px solid var(--rule);
+  display:flex; flex-direction:column;
+  transition:background-color var(--mid)}
+.qcard:first-child{border-left:0}
+.qcard:hover{background:var(--raise)}
+.qcard .form{display:flex; justify-content:space-between; gap:14px; align-items:baseline;
+  font:400 12.5px/1 "Inter Tight",sans-serif; color:var(--faint); margin-bottom:14px}
+.qcard h3{font:600 22px/1.2 "Newsreader",serif; margin:0 0 14px; color:var(--accent)}
+.qcard .ex{margin:0; border-left:2px solid var(--rule); padding-left:20px; flex:1;
+  font:300 18px/1.62 "Newsreader",serif; color:var(--ink-2);
+  transition:border-color var(--mid), color var(--mid), padding-left var(--mid)}
+.qcard:hover .ex{border-color:var(--accent); color:var(--ink); padding-left:24px}
+
+/* ============================================================
+   9. CAREER CHART
+   Bars sit at their true position on a shared axis. The bar is
+   thick and carries the duration; the margin column carries the
+   place. Dates live on the role line where they can't clip.
+   ============================================================ */
+.chart{--barh:38px; --rowpad:18px}
+.crow{padding:17px 0; border-top:1px solid var(--rule-2); transition:background-color var(--fast)}
+.crow:first-child{border-top:0}
+.crow:hover{background:var(--raise)}
+.crow .who b{display:block; font:600 20px/1.18 "Newsreader",serif; color:var(--ink);
+  transition:color var(--fast)}
+.crow:hover .who b{color:var(--accent)}
+.crow .who span{display:block; font:400 12.5px/1.4 "Inter Tight",sans-serif; color:var(--faint); margin-top:3px}
+.crow .top{display:flex; justify-content:space-between; align-items:baseline; gap:18px;
+  margin-bottom:10px}
+.crow .role{font:500 15.5px/1.2 "Inter Tight",sans-serif; margin:0}
+.crow .when{font:400 13px/1 "Inter Tight",sans-serif; color:var(--muted); white-space:nowrap}
+.tracked{position:relative; height:var(--barh); background:var(--rule-2); overflow:hidden}
+.bar{position:absolute; top:0; bottom:0; width:0; display:flex; align-items:center;
+  padding:0 12px; overflow:visible;
+  transition:width .9s var(--overshoot), transform var(--fast) var(--spring),
+             box-shadow var(--fast)}
+.chart.lit .bar{width:var(--w)}
+/* the bar itself reacts: it grows a little and lifts off the track */
+.crow:hover .bar, .crowbtn:hover .bar{transform:scaleY(1.14);
+  box-shadow:0 4px 14px color-mix(in srgb, var(--ink) 26%, transparent)}
+.crow:hover .bar .dur, .crowbtn:hover .bar .dur{letter-spacing:.02em}
+.bar{transform-origin:50% 50%}
+.bar .dur{font:500 12.5px/1 "Inter Tight",sans-serif; white-space:nowrap; opacity:0;
+  transition:opacity .35s ease .55s, letter-spacing var(--fast)}
+.chart.lit .bar .dur{opacity:1}
+.bar.out .dur{position:absolute; left:calc(100% + 11px); color:var(--muted)}
+.bar-ink{background:var(--ink); color:var(--block-ink)}
+.bar-accent{background:var(--accent); color:var(--accent-ink)}
+.bar-muted{background:var(--muted); color:var(--paper)}
+.bar.out.bar-ink .dur, .bar.out.bar-accent .dur, .bar.out.bar-muted .dur{color:var(--muted)}
+.crow .line{margin:11px 0 0; font:400 13.5px/1.45 "Inter Tight",sans-serif; color:var(--muted);
+  transition:color var(--fast)}
+.crow:hover .line{color:var(--ink-2)}
+
+/* --- chart is a positioning context for the hover guide --- */
+.chart{position:relative}
+/* Scoped to a single row (see UI.chart's pointermove handler) — top and
+   height are set inline per-move, so this only fixes the parts that don't
+   change: the line's own look, and a quick glide between rows. */
+.guide{position:absolute; top:0; width:1px; background:var(--accent); pointer-events:none;
+  z-index:3; opacity:.55; transition:top .1s linear, height .1s linear}
+.guide span{position:absolute; top:-9px; left:50%; transform:translateX(-50%);
+  font:500 11px/1 "Inter Tight",sans-serif; color:var(--accent-ink); background:var(--accent);
+  padding:4px 7px; border-radius:2px; white-space:nowrap}
+.guide[hidden]{display:none}
+
+/* --- rows as expandable toggles ---
+   The row's own top-level element is a FLEX container: the existing margin
+   + content grid (`.g`, unchanged from every other use of it on the page)
+   as one flex item, and the expand control as a separate sibling. Because
+   they're siblings rather than one absolutely positioned over the other,
+   they can never collide — regardless of how long the dates text is, how
+   the row wraps, or what breakpoint it's viewed at. */
+.crow{position:relative; display:block; width:100%; text-align:left;
+  background:transparent; border-left:0; border-right:0; border-bottom:0}
+.crowbtn{display:flex; align-items:center; gap:18px; width:100%; text-align:left;
+  background:none; border:0; padding:17px var(--rowpad); cursor:pointer; color:inherit; font:inherit}
+/* The row is inset by --rowpad on each side so the hover highlight never
+   touches the company name or the control. This necessarily narrows `.g`'s
+   own flex-basis (and so `.rt`'s width) by 2×rowpad + the control's own
+   footprint — which is exactly why `.axisrow` below reserves that IDENTICAL
+   amount of space around the axis ticks: both end up the same pixel width,
+   so a bar's left/width percentage and a tick's left percentage still land
+   on the same pixel. Matching the reservation, not avoiding it, is what
+   keeps the two aligned — shrinking `--gutter` to compensate (an earlier,
+   broken attempt at this) doesn't help, because the ticks never used a
+   shrunk gutter to begin with. */
+.crowbtn > .g{flex:1; min-width:0}
+.crow:has(.crowbtn){padding:0}
+
+/* .who's own box is already stretched by .g's grid (default align-items)
+   to match .rt's height — which is exactly the collapsed row's height,
+   since .detail sits outside .g as a sibling of .crowbtn and never grows
+   it. Centring .who's content within that box therefore centres it
+   against the collapsed row and leaves it untouched by expansion, without
+   needing to reference .detail at all. Scoped to the two-column layout:
+   below 1020px the margin column collapses and .who becomes an inline row
+   above .rt instead (see RESPONSIVE), where right-aligning it wouldn't
+   mean anything. .line is untouched by this — it lives in .rt, not .who,
+   so it keeps its own left alignment regardless. */
+@media (min-width:1021px){
+  .crowbtn .who{display:flex; flex-direction:column; justify-content:center; text-align:right}
+}
+
+/* The control is a permanently visible bordered circle — obvious as a UI
+   element at rest, not just on hover — holding a plain chevron-down. It
+   fills with the accent colour and flips to chevron-up once the row is
+   open, so the row's state is unambiguous at a glance. */
+.ctl{flex:none; width:36px; height:36px; border-radius:50%;
+  display:grid; place-items:center; color:var(--muted);
+  border:1.5px solid var(--rule); background:transparent;
+  transition:border-color var(--fast), background-color var(--fast),
+             color var(--fast), transform var(--fast)}
+.ctl svg{width:14px; height:14px; transition:transform var(--mid) var(--spring)}
+.crow:hover .ctl{border-color:var(--accent); color:var(--accent); transform:scale(1.06)}
+.crow.open .ctl{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.crow.open .ctl svg{transform:rotate(180deg)}
+
+/* --- the expanding panel: grid-rows 0fr → 1fr animates to auto height --- */
+.detail{display:grid; grid-template-rows:0fr; transition:grid-template-rows .45s var(--ease)}
+.crow.open .detail{grid-template-rows:1fr}
+.detail > .inner{overflow:hidden}
+.detail .dbody{padding:4px var(--rowpad) 24px}
+.detail ul{list-style:none; margin:0 0 16px; padding:0; max-width:66ch}
+.detail li{position:relative; padding-left:22px; margin-bottom:9px;
+  font:400 15.5px/1.55 "Inter Tight",sans-serif; color:var(--muted); transition:color var(--fast)}
+.detail li::before{content:""; position:absolute; left:0; top:12px; width:9px; height:1px;
+  background:var(--accent); transform:scaleX(.6); transform-origin:0 50%;
+  transition:transform var(--fast)}
+.detail li:hover{color:var(--ink-2)}
+.detail li:hover::before{transform:scaleX(1)}
+.tags{display:flex; flex-wrap:wrap; gap:7px}
+/* A read-only label, not a control: filled, borderless, no hover reaction.
+   Border + hover-highlight is the site's established language for things
+   you can click (.btn, .cbtn, .tog all use exactly that pattern) — a tag
+   deliberately avoids it so it doesn't invite a click that does nothing. */
+.tag{font:400 12.5px/1 "Inter Tight",sans-serif; color:var(--muted); background:var(--sink);
+  border-radius:3px; padding:6px 11px}
+
+.axis{margin-top:14px}
+/* Mirrors crowbtn's own flex structure exactly — same padding, same gap,
+   same reserved control width (as an invisible spacer) — so the ticks
+   container ends up the identical pixel width as every row's own bar
+   track, and a tick's left% lines up with a bar's left%/width% for real,
+   not by coincidence. */
+.axisrow{display:flex; align-items:center; gap:18px; width:100%; padding:0 var(--rowpad)}
+.axisrow > .g{flex:1; min-width:0}
+.axisrow .ctlspace{flex:none; width:36px; height:1px}
+.ticks{position:relative; height:26px; border-top:1px solid var(--rule)}
+.ticks i{position:absolute; top:0; font:400 12px/1 "Inter Tight",sans-serif; color:var(--faint);
+  padding:9px 0 0 8px; border-left:1px solid var(--rule)}
+.ticks i.now{color:var(--accent); font-weight:500;
+  border-left:0; border-right:1px solid var(--accent);
+  padding:9px 8px 0 0; transform:translateX(-100%)}
+
+/* ============================================================
+   10. BUTTONS & LINKS
+   ============================================================ */
+.cta{display:flex; flex-wrap:wrap; gap:10px; margin-top:34px}
+.btn{font:500 14.5px/1 "Inter Tight",sans-serif; padding:13px 18px; border:1px solid var(--rule);
+  cursor:pointer; background:transparent; transform:translate(var(--magx,0px),var(--magy,0px));
+  transition:border-color var(--fast), background-color var(--fast), color var(--fast), transform .12s ease-out}
+.btn:hover{border-color:var(--accent); transform:translate(var(--magx,0px),calc(var(--magy,0px) - 2px))}
+.btn.solid{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.btn.solid:hover{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+/* Anything the reader is meant to click gets a border and a hit area.
+   A coloured word on its own is not a strong enough affordance. */
+.rd{display:inline-flex; align-items:center; gap:9px;
+  font:500 14px/1 "Inter Tight",sans-serif; color:var(--ink);
+  border:1px solid var(--rule); padding:11px 15px; background:transparent; cursor:pointer;
+  transform:translate(var(--magx,0px),var(--magy,0px));
+  transition:border-color var(--fast), color var(--fast), background-color var(--fast), transform var(--fast)}
+.rd:hover{border-color:var(--accent); color:var(--accent); background:var(--raise); transform:translate(var(--magx,0px),calc(var(--magy,0px) - 2px))}
+.rd .ar{display:inline-block; transition:transform var(--mid) var(--spring)}
+.rd:hover .ar{transform:translateX(4px)}
+
+/* ============================================================
+   11. PROSE
+   ============================================================ */
+.prose p{font:300 clamp(18px,2vw,22px)/1.6 "Newsreader",serif; color:var(--ink-2);
+  max-width:56ch; margin:0 0 20px}
+.prose p:last-child{margin-bottom:0}
+
+/* ============================================================
+   12. FOOTER
+   ============================================================ */
+footer{border-top:1px solid var(--rule); padding:36px 0 52px}
+footer .in{display:flex; flex-wrap:wrap; gap:16px 30px; align-items:center;
+  font:400 14px "Inter Tight",sans-serif; color:var(--muted)}
+footer .copy{margin-right:auto; color:var(--ink-2)}
+footer .copy .sep{color:var(--rule); margin:0 1px}
+footer .em{font:500 15px "Inter Tight",sans-serif; color:var(--ink-2); position:relative}
+footer .em::after{content:""; position:absolute; left:0; bottom:-3px; height:1px; width:100%;
+  background:var(--accent); transform:scaleX(0); transform-origin:0 50%;
+  transition:transform var(--mid) var(--spring)}
+footer .em:hover::after{transform:scaleX(1)}
+footer #links{display:flex; align-items:center; gap:18px}
+footer .soc{display:grid; place-items:center; width:20px; height:20px;
+  color:var(--muted); transition:color var(--fast), transform var(--fast)}
+footer .soc svg{width:100%; height:100%}
+/* The three source marks don't fill their own viewBox equally — itch.io's
+   has real interior padding, and Medium's is a short, wide mark rather
+   than a square one — so sized identically they read as visually uneven
+   even though the boxes match. Scaled per icon against the actual ink,
+   not the box, so all three carry roughly the same visual weight. */
+footer .ic-itch{transform:scale(1.32)}
+footer .ic-med{transform:scale(1.14)}
+footer .soc:hover{color:var(--accent); transform:translateY(-2px)}
+
+/* ============================================================
+   13. CV PAGE EXTRAS
+   ============================================================ */
+.edu-item{padding:clamp(26px,3.4vw,40px) 0; border-top:1px solid var(--rule-2)}
+.edu-item:first-child{border-top:0}
+.job .co{display:block; font:600 clamp(24px,2.8vw,32px)/1.1 "Newsreader",serif;
+  letter-spacing:-.015em; transition:color var(--fast)}
+.edu-item .meta{display:block; font:400 13px/1.5 "Inter Tight",sans-serif; color:var(--faint); margin-top:7px}
+.edu-item .role{font:500 17px/1.3 "Inter Tight",sans-serif; margin:0 0 6px}
+.edu-item .sum{font:300 19px/1.55 "Newsreader",serif; color:var(--ink-2); margin:0 0 18px; max-width:56ch}
+
+/* ============================================================
+   14. RESPONSIVE
+   The margin column is the first thing to go. Below 1020px it
+   stops being a column and becomes an inline meta line above
+   its content, and every grid collapses to one column.
+   ============================================================ */
+@media (max-width:1260px){ :root{--gutter:136px; --gap:36px} }
+
+@media (max-width:1080px){
+  .glance{grid-template-columns:repeat(3,minmax(0,1fr)); gap:26px 30px}
+  .lead{grid-column:1/-1; border-right:0; border-bottom:1px solid var(--rule);
+    padding:0 0 22px !important; display:flex; align-items:baseline; gap:16px}
+  .lead > span{margin-top:0; max-width:none}
+}
+
+@media (max-width:1020px){
+  :root{--gutter:0px; --gap:0px}
+  .split{grid-template-columns:1fr; gap:26px}
+  .nowcard{padding-top:22px; border-top:1px solid var(--rule-2)}
+  .stmt{max-width:30ch}
+  .g,.shead,.crow>.g{grid-template-columns:1fr!important; gap:0}
+  .mg,.shead .no{text-align:left; display:flex; flex-wrap:wrap; gap:0 12px;
+    align-items:baseline; padding:0 0 12px}
+  .mg b,.mg em,.mg span,.shead .no em{display:inline}
+  .stmt{max-width:26ch}
+  .crow .who{display:flex; align-items:baseline; gap:12px; margin-bottom:10px}
+  .crow .who span{margin-top:0}
+}
+
+@media (max-width:760px){
+  .glance{grid-template-columns:repeat(2,minmax(0,1fr))}
+  /* 5 groups in 3 columns leaves one clean gap in the last row (33% of
+     it) — minor enough to leave alone. In 2 columns that same leftover
+     item would strand itself with a 50% empty gap beside it, which reads
+     as clearly unbalanced, so here (and only here — spanning it at 3
+     columns instead displaces the second-to-last group onto its own
+     mostly-empty row, a worse result than the plain gap) the odd one out
+     spans the full row instead. */
+  .grp:last-child{grid-column:1/-1}
+  .cbtn{display:none}
+  .cbar{gap:12px}
+}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .chart{--rowpad:12px}
+  .crowbtn{gap:10px}
+  .axisrow{gap:10px}
+  .ctl{width:28px; height:28px}
+  .ctl svg{width:12px; height:12px}
+  .axisrow .ctlspace{width:28px}
+  .guide{display:none}
+  .detail li{font-size:14.5px}
+  header .wrap{height:auto; padding-top:10px; padding-bottom:0; flex-wrap:wrap; row-gap:10px}
+  nav{order:3; width:100%; margin:2px calc(-1 * var(--pad)) 0; padding:0 var(--pad) 7px;
+    overflow-x:auto; scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav a{padding:9px 11px; white-space:nowrap}
+  #ink{bottom:5px}
+  /* Was: .tog{margin-left:auto} with no grouping — whether the toggle
+     landed neatly at the end of row one or got orphaned onto its own
+     near-empty line depended entirely on whether the name plus both PDF
+     buttons happened to fit together first, which shifts with font
+     metrics and is exactly the kind of thing that looks fine in testing
+     and breaks on a real device. Grouping them removes that gamble: this
+     row's own width is always 100%, so it never competes with .sig for
+     space, and .btn's flex:1 below means the two PDF buttons share
+     whatever room is left after the fixed-size toggle — shrinking
+     together rather than either overflowing or stranding the toggle. */
+  .hdr-actions{display:flex; order:2; width:100%; gap:8px; align-items:center}
+  .hdr-actions .btn{flex:1 1 auto; text-align:center; margin-left:0!important; min-width:0}
+  .hdr-actions .tog{margin-left:0; flex:none}
+  .sig i{display:none}
+  .nm{font-size:clamp(40px,13.5vw,62px)}
+  .stmt{max-width:none; font-size:clamp(21px,6vw,26px)}
+  .cta .btn{flex:1 1 auto; text-align:center}
+  .card{flex-basis:min(78vw,300px); min-height:230px; border-left:1px solid var(--rule)}
+  .qcard{flex-basis:min(84vw,360px); padding:24px 22px 26px; border-left:1px solid var(--rule)}
+  .card:hover,.qcard:hover{transform:none; box-shadow:none}
+  .chart{--barh:32px}
+  /* Groups are chips now (see .grp li above), not stacked plain text, so
+     the old tradeoff here has flipped. Two columns of groups meant each
+     group's chips only had half the width to wrap into — a single column
+     of full-width groups lets every chip row use the whole mobile width,
+     which is what actually delivers the height reduction chips are for.
+     It doesn't reintroduce the old "too long and empty" problem either,
+     since that came from one plain-text item per line, not from one
+     group per row — a group's own chips still wrap several to a line. */
+  .glance{grid-template-columns:1fr; gap:24px}
+  .ticks i{font-size:11px; padding-left:6px}
+  /* Footer padding (36px/52px) was tuned for one row of content — copy
+     and icons side by side. There isn't room for that on mobile, so it
+     was left to fall back on flex-wrap, which pushes the icons onto an
+     implicit second row with whatever leftover gap happens to result
+     from the copy text's own width — not a deliberate amount, just
+     however it landed. That's what read as "padding looks off" and
+     made the icons easy to miss below the fold of that gap. Stacking
+     the two rows explicitly, with padding sized for two rows instead
+     of one, makes the icon row's position fixed and predictable rather
+     than a side effect of exactly how much text happens to fit. */
+  footer{padding:28px 0 36px}
+  footer .in{flex-direction:column; align-items:flex-start; gap:16px}
+  footer .copy{margin-right:0}
+}
+
+/* ============================================================
+   15. PRINT  (hides chrome only — the print SHEET itself is built by
+       index.html's own <style> block, since only that page needs it)
+   ============================================================ */
+@media print{
+  header,footer,#prog,.cbar,.no-print{display:none!important}
+}

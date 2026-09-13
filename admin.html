@@ -1,0 +1,1060 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Site data — admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="theme.css">
+<style>
+  /* This page is not part of the public site's design system — it borrows
+     the Hybrid tokens from theme.css for visual continuity, but everything
+     below is admin-only layout and is never read by index.html. */
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  :root{--editor-w:460px}
+  body{margin:0; background:var(--paper); color:var(--ink-2);
+    font:400 15px/1.5 "Inter Tight",system-ui,sans-serif; display:flex; flex-direction:column}
+
+  h1,h2,legend{font-family:"Newsreader",serif; color:var(--ink); font-weight:500}
+
+  /* ---- top bar --------------------------------------------------------- */
+  header{border-bottom:1px solid var(--rule); padding:14px var(--pad);
+    display:flex; align-items:center; gap:18px; flex-wrap:wrap; background:var(--raise)}
+  header h1{font-size:19px; margin:0; white-space:nowrap}
+  header h1 em{font-style:normal; color:var(--accent)}
+  .conn{display:flex; align-items:center; gap:8px; flex-wrap:wrap; flex:1}
+  .conn input[type="password"],.conn input[type="text"]{
+    font:400 13px/1 "Inter Tight"; padding:7px 9px; border:1px solid var(--rule);
+    border-radius:3px; background:var(--paper); color:var(--ink); min-width:0}
+  .conn input[type="password"]{width:220px}
+  .conn input.branch{width:90px}
+  #connStatus{font-size:12.5px; color:var(--muted)}
+  button{font:500 13px/1 "Inter Tight"; padding:8px 13px; border:1px solid var(--ink);
+    background:var(--ink); color:var(--block-ink); border-radius:3px; cursor:pointer}
+  button.ghost{background:transparent; color:var(--ink); border-color:var(--rule)}
+  button.ghost:hover{border-color:var(--ink)}
+  button:disabled{opacity:.4; cursor:not-allowed}
+  button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px}
+
+  /* Reuses the live site's own toggle pattern (theme.css .tog / html[data-theme]) so
+     the admin chrome and the previewed page share one visual language for it. */
+  .tog{margin-left:4px; width:38px; height:38px; padding:0; flex:none; display:grid; place-items:center;
+    border-radius:50%; border:1.5px solid var(--rule); background:transparent; color:var(--ink);
+    transition:border-color var(--fast), transform var(--mid) var(--spring)}
+  .tog:hover{border-color:var(--accent); transform:rotate(-28deg)}
+  .tog svg{width:17px; height:17px}
+  .tog .moon{display:none}
+  html[data-theme="dark"] .tog .sun{display:none}
+  html[data-theme="dark"] .tog .moon{display:block}
+
+  /* ---- body split -------------------------------------------------------*/
+  main{flex:1; display:grid; grid-template-columns:var(--editor-w) 6px 1fr; min-height:0}
+  .pane{min-height:0; display:flex; flex-direction:column; padding:0}
+  .pane-left{border-right:1px solid var(--rule)}
+  .resizer{cursor:col-resize; position:relative; background:transparent}
+  .resizer::after{content:""; position:absolute; inset:0 -3px; }
+  .resizer::before{content:""; position:absolute; left:50%; top:0; bottom:0; width:1px;
+    background:var(--rule); transform:translateX(-50%); transition:background-color var(--fast)}
+  .resizer:hover::before,.resizer.dragging::before{background:var(--accent)}
+  body.resizing{cursor:col-resize; user-select:none}
+  body.resizing iframe{pointer-events:none}
+  .tabs{display:flex; border-bottom:1px solid var(--rule); background:var(--raise)}
+  .tabs button{flex:none; background:transparent; border:none; border-radius:0;
+    color:var(--muted); padding:11px 18px; border-bottom:2px solid transparent}
+  .tabs button.active{color:var(--ink); border-bottom-color:var(--accent)}
+  .tab-body{flex:1; overflow:auto; padding:18px var(--pad)}
+
+  /* ---- mobile tab switcher (hidden on desktop; see RESPONSIVE) ---------*/
+  .mobile-tabs{display:none}
+
+  /* ---- form -------------------------------------------------------------*/
+  fieldset.field-object{border:none; margin:0 0 26px; padding:0; min-width:0}
+  fieldset.field-object legend{font-size:16px; padding:0 0 8px; margin-bottom:6px;
+    border-bottom:1px solid var(--rule); width:100%}
+  fieldset.field-object > fieldset.field-object{margin-left:14px; padding-left:14px;
+    border-left:1px solid var(--rule-2)}
+  label.field{display:block; margin:0 0 12px}
+  label.field > span.field-label{display:block; font:600 13px/1.3 "Inter Tight";
+    letter-spacing:.01em; color:var(--ink); margin-bottom:6px}
+  .field input[type="text"],.field textarea,.field select{
+    width:100%; font:400 14px/1.4 "Inter Tight"; padding:8px 10px;
+    border:1px solid var(--rule); border-radius:3px; background:var(--paper); color:var(--ink)}
+  .field textarea{resize:vertical; min-height:56px}
+  .field.checkbox-field{display:flex; align-items:center; gap:8px}
+  .field.checkbox-field span.field-label{margin:0}
+
+  .field-array > .field-label{display:block; font:600 13px/1.3 "Inter Tight";
+    letter-spacing:.01em; color:var(--ink); margin:0 0 9px}
+  .array-list{display:flex; flex-direction:column; gap:8px; margin-bottom:8px}
+  .array-leaf-row{display:flex; gap:6px; align-items:flex-start}
+  .array-leaf-row input,.array-leaf-row textarea{flex:1}
+  .icon-btn{width:26px; height:26px; padding:0; flex:none; line-height:1;
+    background:var(--sink); color:var(--ink); border:1px solid var(--rule); border-radius:3px}
+  .icon-btn:hover{border-color:var(--ink)}
+
+  .array-card{border:1px solid var(--rule); border-radius:4px; background:var(--raise)}
+  .array-card-header{display:flex; align-items:center; gap:8px; padding:9px 10px}
+  .array-card-title{flex:1; font:500 13.5px/1.3 "Inter Tight"; color:var(--ink);
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .array-toggle{background:transparent; border:none; color:var(--muted); font-size:13px;
+    padding:0 4px; width:auto; cursor:pointer}
+  .array-card-controls{display:flex; gap:4px}
+  .array-card-body{padding:4px 14px 14px; border-top:1px solid var(--rule)}
+  .present-toggle{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted)}
+  .year-row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .year-row input[type="text"]{width:120px}
+  .btn-add{margin-top:2px; background:transparent; color:var(--accent); border:1px dashed var(--rule);
+    width:100%}
+  .btn-add:hover{border-color:var(--accent)}
+
+  /* ---- raw json tab -------------------------------------------------------*/
+  #rawJson{width:100%; height:100%; min-height:420px; font:400 12.5px/1.5 ui-monospace,monospace;
+    padding:14px; border:1px solid var(--rule); border-radius:4px; background:var(--sink); color:var(--ink)}
+  .raw-actions{display:flex; gap:8px; margin-top:10px}
+
+  /* ---- preview ------------------------------------------------------------*/
+  .pane-right{background:var(--sink)}
+  .preview-note{font-size:12px; color:var(--muted); padding:8px var(--pad); margin:0;
+    border-bottom:1px solid var(--rule)}
+  /* iframe#preview{flex:1} alone left ~200px unused: replaced elements like
+     <iframe> can carry an intrinsic 300x150 aspect ratio into flex-basis:0%
+     sizing in some browsers, so flex-grow doesn't reliably fill the column.
+     Absolute-positioning it inside a flex:1 wrapper sidesteps that entirely —
+     inset:0 always fills exactly what's left after the note, regardless of
+     the iframe's own intrinsic size. */
+  .preview-frame-wrap{flex:1; min-height:0; position:relative}
+  iframe#preview{position:absolute; inset:0; width:100%; height:100%; border:none; background:var(--paper)}
+
+  /* ---- footer / validation ------------------------------------------------*/
+  footer{border-top:1px solid var(--rule); background:var(--raise); padding:12px var(--pad);
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+  .footer-actions{display:flex; gap:8px; flex-wrap:wrap}
+  #status{font-size:12.5px; color:var(--muted); flex:1; min-width:200px}
+  #commitMsg{flex:2; min-width:200px; font:400 13px "Inter Tight"; padding:8px 10px;
+    border:1px solid var(--rule); border-radius:3px; background:var(--paper); color:var(--ink)}
+  #validationList{list-style:none; margin:0; padding:0; font-size:12.5px}
+  #validationList li{color:var(--accent); padding:2px 0}
+  #validationList.ok li{color:var(--muted)}
+  .empty-note{color:var(--muted); font-size:13px}
+
+  /* ---- responsive: single pane + tab switcher below ~860px --------------*/
+  @media (max-width:860px){
+    header{padding:10px var(--pad)}
+    .conn{width:100%; order:3}
+    .conn input[type="password"]{width:auto; flex:1 1 140px}
+    .conn input.branch{flex:0 1 70px}
+    #connStatus{width:100%; order:4}
+
+    .mobile-tabs{display:flex; border-bottom:1px solid var(--rule); background:var(--raise)}
+    .mobile-tabs button{flex:1; background:transparent; border:none; border-radius:0;
+      color:var(--muted); padding:13px 10px; border-bottom:2px solid transparent; font-weight:500}
+    .mobile-tabs button.active{color:var(--ink); border-bottom-color:var(--accent)}
+
+    main{display:block; flex:1; min-height:0}
+    .pane{height:100%}
+    .pane-left{border-right:0}
+    .resizer{display:none}
+    main .pane-left{display:none}
+    main .pane-right{display:none}
+    main[data-active="left"] .pane-left{display:flex}
+    main[data-active="right"] .pane-right{display:flex}
+
+    footer{flex-direction:column; align-items:stretch; gap:8px}
+    #status{min-width:0}
+    #commitMsg{min-width:0}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>site<em>-data</em> editor</h1>
+  <div class="conn">
+    <input type="password" id="tokenInput" placeholder="GitHub token (fine-grained, Contents: read/write)" autocomplete="off">
+    <input type="text" id="branchInput" class="branch" placeholder="branch">
+    <button id="loadReadonlyBtn" class="ghost">Load from GitHub (read-only)</button>
+    <button id="connectBtn" class="ghost">Connect &amp; enable saving</button>
+    <button id="loadLocalBtn" class="ghost">Load local copy (no token)</button>
+    <button id="forgetBtn" class="ghost">Forget token</button>
+    <span id="connStatus">Not connected.</span>
+  </div>
+  <button class="tog" id="themeToggle" aria-label="Switch to dark theme">
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M21.6 12h-2.2M4.6 12H2.4M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6M18.8 18.8l-1.6-1.6M6.8 6.8L5.2 5.2"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 1 1 9.4 3.5a6.9 6.9 0 0 0 11.1 11.1z"/></svg>
+  </button>
+</header>
+
+<div class="mobile-tabs" id="mobileTabs">
+  <button class="mobile-tab-btn active" data-pane="left" type="button">Editor</button>
+  <button class="mobile-tab-btn" data-pane="right" type="button">Preview</button>
+</div>
+
+<main id="mainSplit" data-active="left">
+  <section class="pane pane-left">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="form">Form</button>
+      <button class="tab-btn" data-tab="raw">Raw JSON</button>
+    </div>
+    <div class="tab-body" id="formTab">
+      <p class="empty-note">Connect with a token to load <code>site-data.js</code>.</p>
+    </div>
+    <div class="tab-body" id="rawTab" style="display:none">
+      <textarea id="rawJson" spellcheck="false"></textarea>
+      <div class="raw-actions">
+        <button id="applyRawBtn" class="ghost">Apply to form</button>
+        <span class="empty-note">Editing here bypasses form widgets — still validated before save.</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="resizer" id="resizer" role="separator" aria-orientation="vertical" aria-label="Resize editor pane"></div>
+
+  <section class="pane pane-right">
+    <p class="preview-note">Live preview of the real page with your edits, including the print sheet — use its own <strong>Preview PDF</strong> button below to check the print layout.</p>
+    <div class="preview-frame-wrap">
+      <iframe id="preview" title="Site preview" srcdoc="<body style='font-family:sans-serif;color:#888;padding:2em'>Preview appears once data is loaded.</body>"></iframe>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <input type="text" id="commitMsg" placeholder="Commit message (optional — defaults to &quot;Update site data&quot;)">
+  <div class="footer-actions">
+    <button id="validateBtn" class="ghost">Validate</button>
+    <button id="downloadBtn" class="ghost" disabled>Download file</button>
+    <button id="saveBtn" disabled>Save to GitHub</button>
+  </div>
+  <div id="status">Not connected.</div>
+</footer>
+<ul id="validationList" class="ok"></ul>
+
+
+<script>
+(() => {
+"use strict";
+
+/* ============================================================================
+   CONFIG
+   ============================================================================ */
+const CONFIG = { owner: "amruthvarshan", repo: "amruthvarshan.github.io", dataPath: "site-data.js" };
+const API = "https://api.github.com";
+
+/* The fixed header block. Reproduced verbatim on every save — never part of
+   the editable data. Keep this in sync with the top of site-data.js by hand
+   if the rules themselves ever change; the form/JSON below never touches it. */
+const HEADER = `/* ============================================================================
+   site-data.js — CONTENT LAYER
+   ----------------------------------------------------------------------------
+   The only file that changes what the site says. index.html reads from
+   here; it contains no content of its own.
+
+   This file is plain JSON assigned to window.SITE, generated and kept in
+   sync by /admin.html — the private editor page for this repo. Editing by
+   hand still works (it's just JSON below this comment), but the admin page
+   is the safer path: it validates the invariants below before committing,
+   where a hand edit will not. Whichever way you edit, this header is fixed
+   and is reproduced verbatim by the admin page's generator — it is never
+   part of the editable data and a hand edit to it will be overwritten on
+   the next save from that page.
+
+   LAYOUT ORDER
+     The top-level keys below are deliberately ordered to match the page
+     itself, top to bottom: nav (the header), then the hero (name/title/
+     statement/availability/heroButtons), then one block per page section
+     in the order it actually appears (work, writing, career, glance,
+     education, about), then contact (the footer). This is for your own
+     navigation reading the file top-to-bottom or filling in the admin
+     form — it has no effect on rendering; index.html reads each key by
+     name, not by position.
+
+   SECTIONS
+     work/writing/career/glance/education/about each carry their own
+     \`heading\`, \`byline\` and (except work/writing/career) \`subtitle\` —
+     the text in that section's own header block on the page. \`byline\`
+     can be an empty string where the section has none today (education,
+     about) and the paragraph is simply left out rather than rendered
+     empty. work/writing/career show a computed item count instead of a
+     typed subtitle — \`countLabel\` is just the unit noun ("projects",
+     "pieces", "roles"); the number itself always comes from the actual
+     length of that section's list, never typed by hand. The section
+     numbers (01–06) shown in the margin are likewise always computed
+     from this same top-to-bottom order, never stored or typed anywhere.
+
+   NAV / HEROBUTTONS
+     \`nav\` is the header's own link row — text and destination for each,
+     in the order shown; the sliding underline and scroll-spy follow
+     automatically, no matter how many links there are. \`heroButtons\` is
+     the hero's row of calls to action — same idea, plus a \`style\` of
+     either "solid" (filled) or "outline" for each. Both are plain
+     arrays, so the count of links or buttons is just the length of the
+     array — add or remove an entry and the page follows.
+
+   PDFBUTTONS
+     The header's Preview PDF / Save PDF pair — unlike nav/heroButtons
+     these are two fixed, named slots (\`preview\`, \`save\`), not a list,
+     since each drives its own distinct behaviour (one toggles the
+     on-screen preview, the other triggers the browser's print dialog)
+     rather than being an interchangeable link. Each has its own
+     \`enabled\`, \`text\` and \`style\` — turn either off, both off, reword
+     either, or set either to "solid"/"outline" independently. Disabling
+     one never affects the other or the theme toggle beside them.
+
+   TIERS (tools group only, currently)
+     1 = expert    2 = strong    3 = working
+   The numbers are sort order and nothing else — never shown anywhere as
+   digits. An item carrying \`tier\` renders on the web page as a chip with a
+   dashed border (the "hover for more" cue), and the matching word from
+   \`glance.tierLabels\` appears in a tooltip on hover or keyboard focus.
+   There is no colour, weight or size encoding. The PDF ignores \`tier\`
+   entirely: paper can't hover, so Tools prints as plain chips with no
+   level shown.
+
+   AVAILABILITY
+     Controls the "Open to roles" line in the hero's "Currently" card.
+     \`open: false\` removes the line entirely — the card ends cleanly after
+     the location/since line, nothing is left blank in its place. \`text\`
+     is shown only when \`open\` is true, so it never needs clearing when
+     toggling off.
+
+   CAREER
+     \`from\` / \`to\` are decimal years and drive the timeline geometry.
+     2019.75 ≈ October 2019.  \`to: null\` means present — exactly one role
+     should carry it, and it should be roles[0], since the hero's
+     "Currently" block reads that entry directly.
+     Durations are COMPUTED from these — never type "4 yrs" by hand.
+     \`line\`   → the one-liner shown on the homepage chart.
+     \`detail\` → the bullets revealed when a chart row is expanded in place.
+     \`print\`  → the subset that goes on the PDF. This is your page-length dial.
+     \`expandAllText\` is the one button above the chart, unrelated to any
+     one role.
+
+   AT A GLANCE (glance)
+     Renders as a horizontal band below the career chart, five groups by
+     default; a sixth wraps cleanly. Items render as chips — keep them to
+     2–3 words. Only the "Tools" group is expected to carry \`tier\`.
+
+   WORK
+     Renders in the homepage carousel in the order given — there is no
+     "see all" page, so \`items\` is the complete list; strongest first.
+     \`pdf: true\` also pulls that entry into the CV PDF's Projects section.
+
+   WRITING
+     \`excerpt\` is the opening of the piece, 25–45 words — not a summary.
+     \`readMoreText\` is the one button label shared by every writing card.
+   ========================================================================== */
+
+`;
+
+/* ============================================================================
+   SCHEMA
+   ============================================================================ */
+const SCHEMA = { type:"object", fields: {
+  nav: { type:"array", label:"Header navigation", itemLabel:v=>v.text||"(untitled)",
+    of:{type:"object", fields:{ text:{type:"text", label:"Link text"}, href:{type:"text", label:"Link target (# anchor or URL)"} }}},
+  pdfButtons: { type:"object", label:"Header PDF buttons", fields:{
+    preview: { type:"object", label:"Preview PDF button", fields:{
+      enabled:{type:"checkbox", label:"Show this button"},
+      text:{type:"text", label:"Button text"},
+      style:{type:"select", label:"Style", options:["solid","outline"]}
+    }},
+    save: { type:"object", label:"Save PDF button", fields:{
+      enabled:{type:"checkbox", label:"Show this button"},
+      text:{type:"text", label:"Button text"},
+      style:{type:"select", label:"Style", options:["solid","outline"]}
+    }}
+  }},
+  name: { type:"object", label:"Name", fields:{
+    first:{type:"text", label:"First name"}, last:{type:"text", label:"Last name"} }},
+  title: { type:"array", label:"Titles", of:{type:"text"} },
+  statement: { type:"textarea", label:"Statement" },
+  rev: { type:"text", label:"Revision label" },
+  availability: { type:"object", label:"Availability (hero \"Currently\" card)", fields:{
+    open: { type:"checkbox", label:"Show the \"Open to roles\" line" },
+    text: { type:"text", label:"Text shown when open" }
+  }},
+  heroButtons: { type:"array", label:"Hero buttons", itemLabel:v=>v.text||"(untitled)",
+    of:{type:"object", fields:{
+      text:{type:"text", label:"Button text"}, href:{type:"text", label:"Link (# anchor, URL, or mailto:)"},
+      style:{type:"select", label:"Style", options:["solid","outline"]}
+    }}},
+  work: { type:"object", label:"Work section", fields:{
+    heading:{type:"text", label:"Section heading"}, byline:{type:"textarea", label:"Section byline"},
+    countLabel:{type:"text", label:"Count unit (e.g. \"projects\" — the number itself is always computed)"},
+    items: { type:"array", label:"Projects", itemLabel:v=>v.title||"(untitled)",
+      of:{type:"object", fields:{
+        title:{type:"text", label:"Title"}, meta:{type:"text", label:"Meta"},
+        pdf:{type:"checkbox", label:"Include in CV PDF"},
+        line:{type:"textarea", label:"Line"}, href:{type:"text", label:"URL"} }}}
+  }},
+  writing: { type:"object", label:"Writing section", fields:{
+    heading:{type:"text", label:"Section heading"}, byline:{type:"textarea", label:"Section byline"},
+    countLabel:{type:"text", label:"Count unit (e.g. \"pieces\" — the number itself is always computed)"},
+    readMoreText:{type:"text", label:"Button text (shared by every writing card)"},
+    items: { type:"array", label:"Pieces", itemLabel:v=>v.title||"(untitled)",
+      of:{type:"object", fields:{
+        title:{type:"text", label:"Title"}, form:{type:"text", label:"Form"}, length:{type:"text", label:"Length"},
+        excerpt:{type:"textarea", label:"Excerpt (25–45 words, the opening — not a summary)"}, href:{type:"text", label:"URL"} }}}
+  }},
+  career: { type:"object", label:"Career section", fields:{
+    heading:{type:"text", label:"Section heading"}, byline:{type:"textarea", label:"Section byline"},
+    countLabel:{type:"text", label:"Count unit (e.g. \"roles\" — the number itself is always computed)"},
+    expandAllText:{type:"text", label:"\"Expand all\" button text"},
+    roles: { type:"array", label:"Roles", itemLabel:v=>`${v.company||"(untitled)"} — ${v.role||""}`,
+      of:{type:"object", fields:{
+        company:{type:"text", label:"Company"}, role:{type:"text", label:"Role"}, where:{type:"text", label:"Location"},
+        from:{type:"year", label:"From (decimal year)"},
+        to:{type:"year-or-null", label:"To (decimal year — blank/Present for the current role)"},
+        dates:{type:"text", label:"Display dates"},
+        tone:{type:"select", label:"Tone", options:["ink","accent","muted"]},
+        line:{type:"textarea", label:"Homepage line"},
+        detail:{type:"array", label:"Detail bullets (chart expand)", of:{type:"textarea"}},
+        print:{type:"array", label:"PDF bullets (page-length dial)", of:{type:"textarea"}},
+        tags:{type:"array", label:"Tags", of:{type:"text"}}
+      }}}
+  }},
+  glance: { type:"object", label:"At a glance section", fields:{
+    heading:{type:"text", label:"Section heading"}, byline:{type:"textarea", label:"Section byline"},
+    subtitle:{type:"text", label:"Section margin subtitle"},
+    lead: { type:"object", label:"Lead figure", fields:{
+      value:{type:"text", label:"Value"}, unit:{type:"text", label:"Unit"}, note:{type:"text", label:"Note"} }},
+    tierLabels: { type:"object", label:"Tier labels", fields:{
+      "1":{type:"text", label:"Tier 1 (expert)"}, "2":{type:"text", label:"Tier 2 (strong)"}, "3":{type:"text", label:"Tier 3 (working)"} }},
+    groups: { type:"array", label:"Groups", itemLabel:v=>v.label||"(untitled)",
+      of:{type:"object", fields:{
+        label:{type:"text", label:"Group label"},
+        items:{type:"array", label:"Items", itemLabel:v=>v.name||"(untitled)",
+          of:{type:"object", fields:{ name:{type:"text", label:"Name"}, tier:{type:"tier", label:"Tier"} }}}
+      }}}
+  }},
+  education: { type:"object", label:"Education section", fields:{
+    heading:{type:"text", label:"Section heading"}, byline:{type:"textarea", label:"Section byline (leave blank for none)"},
+    subtitle:{type:"text", label:"Section margin subtitle"},
+    items: { type:"array", label:"Education entries", itemLabel:v=>v.award||"(untitled)",
+      of:{type:"object", fields:{
+        award:{type:"text", label:"Award"}, school:{type:"text", label:"School"}, dates:{type:"text", label:"Dates"},
+        note:{type:"textarea", label:"Note"} }}}
+  }},
+  about: { type:"object", label:"About section", fields:{
+    heading:{type:"text", label:"Section heading"}, byline:{type:"textarea", label:"Section byline (leave blank for none)"},
+    subtitle:{type:"text", label:"Section margin subtitle"},
+    marginLabel:{type:"text", label:"Margin note label"}, marginNote:{type:"text", label:"Margin note detail"},
+    paragraphs: { type:"array", label:"About paragraphs", of:{type:"textarea"} }
+  }},
+  contact: { type:"array", label:"Contact links (footer)", itemLabel:v=>v.text||"(untitled)",
+    of:{type:"object", fields:{ text:{type:"text", label:"Label"}, href:{type:"text", label:"URL"} }}}
+}};
+
+/* ============================================================================
+   STATE
+   ============================================================================ */
+let DATA = null;
+let currentSha = null;
+let siteHtmlCache = null;
+const OPEN = new Set();
+let updateTimer = null;
+
+const $ = id => document.getElementById(id);
+const formTab = $("formTab"), rawTab = $("rawTab"), rawJson = $("rawJson");
+const tokenInput = $("tokenInput"), branchInput = $("branchInput");
+const connStatus = $("connStatus"), status = $("status");
+const saveBtn = $("saveBtn"), downloadBtn = $("downloadBtn"), commitMsg = $("commitMsg");
+const validationList = $("validationList");
+const preview = $("preview");
+/* githubMode flag removed — saving is gated on currentSha + a token being present (see updateSaveAvailability), not on how the data was loaded */
+
+/* ============================================================================
+   GITHUB API
+   ============================================================================ */
+function getBranch(){ return branchInput.value.trim() || sessionStorage.getItem("gh_branch") || "main"; }
+
+async function ghRequest(path, opts = {}){
+  const token = sessionStorage.getItem("gh_token");
+  const headers = {
+    "Accept":"application/vnd.github+json",
+    "X-GitHub-Api-Version":"2022-11-28",
+    ...(opts.headers || {})
+  };
+  if(token) headers["Authorization"] = "Bearer " + token;
+  const res = await fetch(API + path, { ...opts, headers });
+  if(!res.ok){
+    let detail = "";
+    try{ detail = (await res.json()).message || ""; }catch(_){}
+    const err = new Error(`GitHub API ${res.status}${detail ? ": " + detail : ""}`);
+    err.status = res.status;
+    throw err;
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+function decodeBase64Utf8(b64){
+  const binary = atob(b64.replace(/\n/g, ""));
+  const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+  return new TextDecoder("utf-8").decode(bytes);
+}
+function encodeUtf8Base64(str){
+  const bytes = new TextEncoder().encode(str);
+  let binary = "";
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+
+function extractSiteJSON(text){
+  const idx = text.indexOf("window.SITE");
+  if(idx === -1) throw new Error('"window.SITE" assignment not found in file');
+  const start = text.indexOf("{", idx);
+  const end = text.lastIndexOf("}");
+  if(start === -1 || end === -1 || end < start) throw new Error("Could not locate the JSON object body");
+  return text.slice(start, end + 1);
+}
+function generateFileText(data){
+  return HEADER + "window.SITE =\n" + JSON.stringify(data, null, 2) + ";\n";
+}
+
+/* ============================================================================
+   CONNECT / LOAD / SAVE
+   ============================================================================ */
+function updateSaveAvailability(){
+  saveBtn.disabled = !(currentSha && sessionStorage.getItem("gh_token"));
+}
+
+async function connect(){
+  const token = tokenInput.value.trim();
+  if(!token){ connStatus.textContent = "Enter a token first."; return; }
+  sessionStorage.setItem("gh_token", token);
+  connStatus.textContent = "Connecting…";
+  try{
+    const repoInfo = await ghRequest(`/repos/${CONFIG.owner}/${CONFIG.repo}`);
+    sessionStorage.setItem("gh_branch", branchInput.value.trim() || repoInfo.default_branch);
+    branchInput.value = getBranch();
+    connStatus.textContent = `Connected — ${repoInfo.full_name} (${getBranch()})`;
+    if(DATA && currentSha){
+      /* Already loaded — read-only or otherwise — against a real sha.
+         Adding a token here just unlocks saving against what's already
+         on screen; re-fetching now would silently discard any edits
+         made since that read-only load. */
+      updateSaveAvailability();
+      status.textContent = "Token accepted — you can now save to GitHub.";
+    }else{
+      await loadFromGitHub();
+    }
+  }catch(e){
+    connStatus.textContent = "Connection failed: " + e.message;
+    sessionStorage.removeItem("gh_token");
+  }
+}
+
+function forget(){
+  sessionStorage.removeItem("gh_token");
+  sessionStorage.removeItem("gh_branch");
+  tokenInput.value = ""; DATA = null; currentSha = null;
+  formTab.innerHTML = '<p class="empty-note">Load <code>site-data.js</code> to begin — "Load from GitHub" works without a token (read-only); add one any time to enable saving.</p>';
+  rawJson.value = "";
+  preview.srcdoc = "<body style='font-family:sans-serif;color:#888;padding:2em'>Disconnected.</body>";
+  saveBtn.disabled = true; downloadBtn.disabled = true;
+  connStatus.textContent = "Not connected."; status.textContent = "Not connected.";
+  setValidation([]);
+}
+
+/* Reads directly from GitHub — works with or without a token, since an
+   unauthenticated GET against a public repo's contents endpoint succeeds
+   on its own (just at GitHub's lower unauthenticated rate limit). This is
+   what lets the page be read, edited and previewed on a machine that has
+   no token at all. Saving is a separate capability, gated in
+   updateSaveAvailability() on currentSha plus a token actually being
+   present — not on how the data got here. */
+async function loadFromGitHub(){
+  status.textContent = "Loading from GitHub…";
+  try{
+    const res = await ghRequest(`/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.dataPath}?ref=${encodeURIComponent(getBranch())}`);
+    currentSha = res.sha;
+    DATA = JSON.parse(extractSiteJSON(decodeBase64Utf8(res.content)));
+    OPEN.clear();
+    renderForm();
+    await refreshPreview();
+    runValidation();
+    updateSaveAvailability();
+    downloadBtn.disabled = false;
+    const readOnly = !sessionStorage.getItem("gh_token");
+    status.textContent = `Loaded from GitHub — sha ${currentSha.slice(0,7)}` +
+      (readOnly ? ". Read-only — add a token above and click Connect to enable saving." : "");
+    if(readOnly) connStatus.textContent = `Read-only — ${CONFIG.owner}/${CONFIG.repo} (${getBranch()})`;
+  }catch(e){
+    status.textContent = "Load failed: " + e.message;
+  }
+}
+
+/* No-token path: reads site-data.js from wherever admin.html itself is being
+   served — the same relative file a static server or GitHub Pages would
+   serve it from. Lets the form, validation and preview be tested fully
+   before anything touches GitHub. Save-to-GitHub stays disabled in this
+   mode since there is no sha to write against; use Download instead. */
+async function loadFromLocal(){
+  status.textContent = "Loading local copy…";
+  try{
+    const res = await fetch(new URL(CONFIG.dataPath, location.href), { cache:"no-store" });
+    if(!res.ok) throw new Error(`${res.status} fetching ${CONFIG.dataPath} next to admin.html`);
+    DATA = JSON.parse(extractSiteJSON(await res.text()));
+    currentSha = null;
+    OPEN.clear();
+    renderForm();
+    await refreshPreview();
+    runValidation();
+    saveBtn.disabled = true; downloadBtn.disabled = false;
+    connStatus.textContent = "Local test mode — not connected to GitHub.";
+    status.textContent = "Loaded local copy. Save to GitHub is off; use Download to inspect the generated file.";
+  }catch(e){
+    status.textContent = "Local load failed: " + e.message;
+  }
+}
+
+function downloadFile(){
+  if(!DATA) return;
+  const blob = new Blob([generateFileText(DATA)], { type:"text/javascript" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "site-data.js";
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function saveData(){
+  if(!DATA || !currentSha || !sessionStorage.getItem("gh_token")){ return; }
+  const errors = runValidation();
+  if(errors.length){
+    const proceed = confirm(`${errors.length} validation issue(s):\n\n${errors.slice(0,12).join("\n")}\n\nSave anyway?`);
+    if(!proceed) return;
+  }
+  const message = commitMsg.value.trim() || "Update site data";
+  const text = generateFileText(DATA);
+  status.textContent = "Saving…";
+  saveBtn.disabled = true;
+  try{
+    const res = await ghRequest(`/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${CONFIG.dataPath}`, {
+      method:"PUT",
+      body: JSON.stringify({ message, content: encodeUtf8Base64(text), sha: currentSha, branch: getBranch() })
+    });
+    currentSha = res.content.sha;
+    status.textContent = `Saved — commit ${res.commit.sha.slice(0,7)}. Pages will update in about a minute.`;
+  }catch(e){
+    if(e.status === 409){
+      status.textContent = "Save conflict: the file changed on GitHub since you loaded it. Reloading — reapply your edits.";
+      await loadFromGitHub();
+    }else{
+      status.textContent = "Save failed: " + e.message;
+    }
+  }finally{
+    updateSaveAvailability();
+  }
+}
+
+/* ============================================================================
+   VALIDATION
+   ============================================================================ */
+function runValidation(){
+  const errors = validate(DATA);
+  setValidation(errors);
+  return errors;
+}
+function setValidation(errors){
+  validationList.innerHTML = "";
+  validationList.className = errors.length ? "" : "ok";
+  if(!errors.length){
+    const li = document.createElement("li"); li.textContent = DATA ? "No issues found." : "";
+    validationList.appendChild(li); return;
+  }
+  errors.forEach(msg => { const li = document.createElement("li"); li.textContent = msg; validationList.appendChild(li); });
+}
+function validate(data){
+  if(!data) return [];
+  const errors = [];
+  if(data.availability && data.availability.open && !data.availability.text)
+    errors.push('availability.text is empty but availability.open is true — the hero would show a blank "Open to roles" line');
+  const roles = (data.career && data.career.roles) || [];
+  let present = 0;
+  roles.forEach((r,i) => {
+    const label = `career.roles[${i}] (${r.company || "—"})`;
+    if(typeof r.from !== "number") errors.push(`${label}: "from" must be a number`);
+    if(r.to !== null && typeof r.to !== "number") errors.push(`${label}: "to" must be a number or null`);
+    if(typeof r.from === "number" && typeof r.to === "number" && !(r.from < r.to))
+      errors.push(`${label}: "from" must be before "to"`);
+    if(r.to === null) present++;
+    if(!Array.isArray(r.detail) || r.detail.length === 0) errors.push(`${label}: "detail" should have at least one bullet`);
+    if(!Array.isArray(r.print) || r.print.length === 0) errors.push(`${label}: "print" should have at least one bullet`);
+    if(!["ink","accent","muted"].includes(r.tone)) errors.push(`${label}: "tone" must be ink, accent or muted`);
+  });
+  if(roles.length && present === 0) errors.push('career.roles: no role has "to" set to Present — the hero\u2019s "Currently" block needs one');
+  if(present > 1) errors.push(`career.roles: ${present} roles are set to Present — only one should be`);
+  if(roles.length && roles[0].to !== null) errors.push('career.roles[0] should be the Present role — the hero reads roles[0] directly');
+
+  ((data.glance && data.glance.groups) || []).forEach((g,gi) => {
+    (g.items || []).forEach((it,ii) => {
+      if(it.tier !== undefined && ![1,2,3].includes(it.tier))
+        errors.push(`glance.groups[${gi}].items[${ii}] (${it.name}): tier must be 1, 2 or 3`);
+    });
+  });
+
+  const required = { work:["title","href"], writing:["title","href"], education:["award","school"] };
+  Object.keys(required).forEach(k => {
+    ((data[k] && data[k].items) || []).forEach((item,i) => {
+      required[k].forEach(req => { if(!item[req]) errors.push(`${k}.items[${i}]: "${req}" is empty`); });
+    });
+  });
+
+  const linkLists = { nav:["text","href"], heroButtons:["text","href"], contact:["text","href"] };
+  Object.keys(linkLists).forEach(k => {
+    (data[k] || []).forEach((item,i) => {
+      linkLists[k].forEach(req => { if(!item[req]) errors.push(`${k}[${i}]: "${req}" is empty`); });
+    });
+  });
+
+  try{ JSON.parse(extractSiteJSON(generateFileText(data))); }
+  catch(e){ errors.push("Generated file failed to round-trip as valid JSON: " + e.message); }
+
+  return errors;
+}
+
+/* ============================================================================
+   PREVIEW
+   ============================================================================ */
+function scheduleUpdate(){
+  clearTimeout(updateTimer);
+  updateTimer = setTimeout(() => { refreshPreview(); runValidation(); }, 400);
+}
+async function refreshPreview(){
+  try{
+    const base = new URL(".", location.href).href;
+    if(!siteHtmlCache) siteHtmlCache = await (await fetch(new URL("index.html", base), { cache:"no-store" })).text();
+    let html = siteHtmlCache.replace(
+      /<script src="site-data\.js"><\/script>/,
+      `<script>window.SITE = ${JSON.stringify(DATA)};<\/script>`
+    );
+    html = html.replace("<head>", `<head><base href="${base}">`);
+    preview.srcdoc = html;
+  }catch(e){
+    preview.srcdoc = `<body style="font-family:sans-serif;color:#888;padding:2em">Preview unavailable: ${e.message}</body>`;
+  }
+}
+
+/* ============================================================================
+   PATH HELPERS
+   ============================================================================ */
+function getPath(obj, path){ return path.reduce((o,k) => (o == null ? o : o[k]), obj); }
+function setPath(obj, path, val){
+  let o = obj;
+  for(let i = 0; i < path.length - 1; i++) o = o[path[i]];
+  o[path[path.length - 1]] = val;
+}
+function deletePath(obj, path){
+  let o = obj;
+  for(let i = 0; i < path.length - 1; i++) o = o[path[i]];
+  delete o[path[path.length - 1]];
+}
+function moveItem(arrPath, delta){
+  const arr = getPath(DATA, arrPath.slice(0, -1));
+  const i = arrPath[arrPath.length - 1];
+  const j = i + delta;
+  if(j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  renderForm();
+}
+function removeItem(arrPath){
+  const arr = getPath(DATA, arrPath.slice(0, -1));
+  const i = arrPath[arrPath.length - 1];
+  arr.splice(i, 1);
+  renderForm();
+}
+function blankValue(schema){
+  switch(schema.type){
+    case "text": case "textarea": return "";
+    case "checkbox": return false;
+    case "select": return schema.options[0];
+    case "year": return new Date().getFullYear();
+    case "year-or-null": return null;
+    case "object": { const o = {}; for(const k in schema.fields) if(schema.fields[k].type !== "tier") o[k] = blankValue(schema.fields[k]); return o; }
+    case "array": return [];
+    default: return "";
+  }
+}
+
+/* ============================================================================
+   FORM RENDERING (leaf inputs mutate DATA + debounce; structural edits re-render)
+   ============================================================================ */
+function el(tag, cls, text){ const n = document.createElement(tag); if(cls) n.className = cls; if(text !== undefined) n.textContent = text; return n; }
+function mkIconBtn(label, title, onClick){
+  const b = document.createElement("button"); b.type = "button"; b.className = "icon-btn"; b.title = title; b.textContent = label;
+  b.addEventListener("click", onClick); return b;
+}
+
+function renderNode(schema, value, path){
+  switch(schema.type){
+    case "text": return renderTextLike(schema, value, path, false);
+    case "textarea": return renderTextLike(schema, value, path, true);
+    case "checkbox": return renderCheckbox(schema, value, path);
+    case "select": return renderSelect(schema, value, path);
+    case "tier": return renderTier(schema, value, path);
+    case "year": return renderYear(schema, value, path, false);
+    case "year-or-null": return renderYear(schema, value, path, true);
+    case "object": return renderObject(schema, value, path);
+    case "array": return renderArray(schema, value, path);
+    default: return document.createTextNode("");
+  }
+}
+
+function renderTextLike(schema, value, path, multiline){
+  const wrap = el("label", "field");
+  if(schema.label) wrap.appendChild(el("span", "field-label", schema.label));
+  const input = document.createElement(multiline ? "textarea" : "input");
+  if(!multiline) input.type = "text";
+  input.value = value ?? "";
+  input.addEventListener("input", () => { setPath(DATA, path, input.value); scheduleUpdate(); });
+  wrap.appendChild(input);
+  return wrap;
+}
+function renderCheckbox(schema, value, path){
+  const wrap = el("label", "field checkbox-field");
+  const input = document.createElement("input"); input.type = "checkbox"; input.checked = !!value;
+  input.addEventListener("change", () => { setPath(DATA, path, input.checked); scheduleUpdate(); });
+  wrap.appendChild(input);
+  if(schema.label) wrap.appendChild(el("span", "field-label", schema.label));
+  return wrap;
+}
+function renderSelect(schema, value, path){
+  const wrap = el("label", "field");
+  if(schema.label) wrap.appendChild(el("span", "field-label", schema.label));
+  const sel = document.createElement("select");
+  schema.options.forEach(o => { const opt = document.createElement("option"); opt.value = o; opt.textContent = o; if(o === value) opt.selected = true; sel.appendChild(opt); });
+  sel.addEventListener("change", () => { setPath(DATA, path, sel.value); scheduleUpdate(); });
+  wrap.appendChild(sel);
+  return wrap;
+}
+function renderTier(schema, value, path){
+  const wrap = el("label", "field");
+  if(schema.label) wrap.appendChild(el("span", "field-label", schema.label));
+  const sel = document.createElement("select");
+  [["", "— none —"], ["1", "1 · Expert"], ["2", "2 · Strong"], ["3", "3 · Working"]].forEach(([v,t]) => {
+    const opt = document.createElement("option"); opt.value = v; opt.textContent = t;
+    if((value === undefined && v === "") || String(value) === v) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener("change", () => {
+    if(sel.value === "") deletePath(DATA, path); else setPath(DATA, path, Number(sel.value));
+    scheduleUpdate();
+  });
+  wrap.appendChild(sel);
+  return wrap;
+}
+function renderYear(schema, value, path, nullable){
+  const wrap = el("label", "field");
+  if(schema.label) wrap.appendChild(el("span", "field-label", schema.label));
+  const row = el("div", "year-row");
+  const input = document.createElement("input"); input.type = "text"; input.inputMode = "decimal";
+  input.value = (value === null || value === undefined) ? "" : String(value);
+  input.disabled = nullable && value === null;
+  input.addEventListener("input", () => {
+    if(input.value.trim() === "") return;
+    const n = parseFloat(input.value);
+    if(!Number.isNaN(n)){ setPath(DATA, path, n); scheduleUpdate(); }
+  });
+  row.appendChild(input);
+  if(nullable){
+    const cbLabel = el("label", "present-toggle");
+    const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = value === null;
+    cb.addEventListener("change", () => {
+      if(cb.checked){ setPath(DATA, path, null); input.value = ""; input.disabled = true; }
+      else { input.disabled = false; input.focus(); }
+      scheduleUpdate();
+    });
+    cbLabel.appendChild(cb); cbLabel.appendChild(document.createTextNode(" Present"));
+    row.appendChild(cbLabel);
+  }
+  wrap.appendChild(row);
+  return wrap;
+}
+function renderObject(schema, value, path){
+  const wrap = el("fieldset", "field-object");
+  if(schema.label){ const legend = document.createElement("legend"); legend.textContent = schema.label; wrap.appendChild(legend); }
+  for(const key in schema.fields) wrap.appendChild(renderNode(schema.fields[key], value[key], path.concat(key)));
+  return wrap;
+}
+function renderArray(schema, value, path){
+  const wrap = el("div", "field-array");
+  if(schema.label) wrap.appendChild(el("div", "field-label", schema.label));
+  const list = el("div", "array-list");
+  value.forEach((item, i) => {
+    const itemPath = path.concat(i);
+    list.appendChild(schema.of.type === "object"
+      ? renderArrayObjectItem(schema, item, itemPath, i, value.length)
+      : renderArrayLeafItem(schema.of, item, itemPath));
+  });
+  wrap.appendChild(list);
+  const addBtn = el("button", "btn-add", "+ Add");
+  addBtn.type = "button";
+  addBtn.addEventListener("click", () => { value.push(blankValue(schema.of)); renderForm(); });
+  wrap.appendChild(addBtn);
+  return wrap;
+}
+function renderArrayLeafItem(leafSchema, value, path){
+  const row = el("div", "array-leaf-row");
+  const input = document.createElement(leafSchema.type === "textarea" ? "textarea" : "input");
+  if(leafSchema.type !== "textarea") input.type = "text";
+  input.value = value ?? "";
+  input.addEventListener("input", () => { setPath(DATA, path, input.value); scheduleUpdate(); });
+  row.appendChild(input);
+  row.appendChild(mkIconBtn("×", "Remove", () => removeItem(path)));
+  return row;
+}
+function renderArrayObjectItem(arraySchema, value, path, index, total){
+  const key = path.join(".");
+  const card = el("div", "array-card");
+  const header = el("div", "array-card-header");
+  const toggle = mkIconBtn(OPEN.has(key) ? "\u25be" : "\u25b8", "Expand/collapse", () => { OPEN.has(key) ? OPEN.delete(key) : OPEN.add(key); renderForm(); });
+  toggle.className = "array-toggle";
+  header.appendChild(toggle);
+  header.appendChild(el("span", "array-card-title", arraySchema.itemLabel ? arraySchema.itemLabel(value) : `#${index + 1}`));
+  const controls = el("div", "array-card-controls");
+  const up = mkIconBtn("\u2191", "Move up", () => moveItem(path, -1)); if(index === 0) up.disabled = true;
+  const down = mkIconBtn("\u2193", "Move down", () => moveItem(path, 1)); if(index === total - 1) down.disabled = true;
+  controls.appendChild(up); controls.appendChild(down);
+  controls.appendChild(mkIconBtn("×", "Remove", () => removeItem(path)));
+  header.appendChild(controls);
+  card.appendChild(header);
+  if(OPEN.has(key)){
+    const body = el("div", "array-card-body");
+    for(const fkey in arraySchema.of.fields) body.appendChild(renderNode(arraySchema.of.fields[fkey], value[fkey], path.concat(fkey)));
+    card.appendChild(body);
+  }
+  return card;
+}
+function renderForm(){
+  formTab.innerHTML = "";
+  formTab.appendChild(renderNode(SCHEMA, DATA, []));
+  rawJson.value = JSON.stringify(DATA, null, 2);
+}
+
+/* ============================================================================
+   WIRING
+   ============================================================================ */
+$("connectBtn").addEventListener("click", connect);
+$("loadReadonlyBtn").addEventListener("click", loadFromGitHub);
+$("loadLocalBtn").addEventListener("click", loadFromLocal);
+$("forgetBtn").addEventListener("click", forget);
+saveBtn.addEventListener("click", saveData);
+downloadBtn.addEventListener("click", downloadFile);
+$("validateBtn").addEventListener("click", runValidation);
+$("applyRawBtn").addEventListener("click", () => {
+  try{
+    DATA = JSON.parse(rawJson.value);
+    OPEN.clear();
+    renderForm();
+    scheduleUpdate();
+    status.textContent = "Raw JSON applied.";
+  }catch(e){
+    status.textContent = "Raw JSON is invalid: " + e.message;
+  }
+});
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const tab = btn.dataset.tab;
+    formTab.style.display = tab === "form" ? "" : "none";
+    rawTab.style.display = tab === "raw" ? "" : "none";
+  });
+});
+
+/* ---- resizable editor pane (desktop) --------------------------------------
+   Drag updates --editor-w directly for a live-tracking split; the width is
+   only persisted to localStorage once, on release, not on every pixel of
+   movement. Pointer capture means the drag keeps tracking even if the
+   cursor slips past the thin handle mid-move. */
+(function initResizer(){
+  const resizer = $("resizer");
+  const mainEl = $("mainSplit");
+  let dragging = false;
+
+  function clamp(px){
+    const min = 320, max = Math.min(900, window.innerWidth - 360);
+    return Math.max(min, Math.min(max, px));
+  }
+  resizer.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    resizer.classList.add("dragging");
+    document.body.classList.add("resizing");
+    resizer.setPointerCapture(e.pointerId);
+  });
+  resizer.addEventListener("pointermove", (e) => {
+    if(!dragging) return;
+    const rect = mainEl.getBoundingClientRect();
+    const w = clamp(e.clientX - rect.left);
+    document.documentElement.style.setProperty("--editor-w", w + "px");
+  });
+  function endDrag(){
+    if(!dragging) return;
+    dragging = false;
+    resizer.classList.remove("dragging");
+    document.body.classList.remove("resizing");
+    try{ localStorage.setItem("admin_editor_w", getComputedStyle(document.documentElement).getPropertyValue("--editor-w").trim()); }catch(_){}
+  }
+  resizer.addEventListener("pointerup", endDrag);
+  resizer.addEventListener("pointercancel", endDrag);
+
+  try{
+    const saved = localStorage.getItem("admin_editor_w");
+    if(saved) document.documentElement.style.setProperty("--editor-w", saved);
+  }catch(_){}
+})();
+
+/* ---- mobile tab switcher (Editor / Preview) -------------------------------
+   Only visually active under the responsive breakpoint — main's data-active
+   attribute drives which pane is display:flex there. Harmless at desktop
+   widths, where CSS shows both panes regardless of this attribute. */
+(function initMobileTabs(){
+  const mainEl = $("mainSplit");
+  document.querySelectorAll(".mobile-tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".mobile-tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      mainEl.dataset.active = btn.dataset.pane;
+    });
+  });
+})();
+
+/* ---- light/dark toggle for the admin chrome itself ------------------------
+   Independent of the previewed page's own theme (which lives inside the
+   iframe and follows the site's own toggle/system preference) — this one
+   is just for editing comfortably in low light, and is remembered between
+   visits since there's nothing sensitive in a display preference. */
+(function initThemeToggle(){
+  const btn = $("themeToggle");
+  function apply(t){
+    document.documentElement.dataset.theme = t;
+    btn.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme");
+  }
+  let saved = null;
+  try{ saved = localStorage.getItem("admin_theme"); }catch(_){}
+  apply(saved || "light");
+  btn.addEventListener("click", () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    apply(next);
+    try{ localStorage.setItem("admin_theme", next); }catch(_){}
+  });
+})();
+
+/* Resume a session-scoped token/branch if the tab still has one. */
+(function init(){
+  const savedToken = sessionStorage.getItem("gh_token");
+  const savedBranch = sessionStorage.getItem("gh_branch");
+  if(savedBranch) branchInput.value = savedBranch;
+  if(savedToken){ tokenInput.value = savedToken; connect(); }
+})();
+
+})();
+</script>
+</body>
+</html>
