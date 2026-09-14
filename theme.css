@@ -519,9 +519,7 @@ section{padding:clamp(56px,7.4vw,100px) 0}
 .ticks{position:relative; height:26px; border-top:1px solid var(--rule)}
 .ticks i{position:absolute; top:0; font:400 12px/1 "Inter Tight",sans-serif; color:var(--faint);
   padding:9px 0 0 8px; border-left:1px solid var(--rule)}
-.ticks i.now{color:var(--accent); font-weight:500;
-  border-left:0; border-right:1px solid var(--accent);
-  padding:9px 8px 0 0; transform:translateX(-100%)}
+.ticks i.now{color:var(--accent); font-weight:500; border-left-color:var(--accent)}
 
 /* ============================================================
    10. BUTTONS & LINKS

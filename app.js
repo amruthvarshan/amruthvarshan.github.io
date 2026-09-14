@@ -439,6 +439,24 @@ window.UI = (function () {
           bar.classList.add('out-hide');
         }
       });
+
+      /* The "now" tick grows rightward from its own line, same as every
+         other year on the axis — but unlike them, there's a hard edge
+         just past it: the axis itself ends shortly after "now" (there's
+         a small buffer built into the axis's range, but it's a fixed
+         number of YEARS, so how many actual pixels that buys varies with
+         both the career's total span and the viewport width). Rather
+         than guess a CSS padding value that happens to cover most cases,
+         this measures the real overflow, if any, and nudges the label
+         left by exactly that amount — so it always ends flush with the
+         axis's own right edge instead of spilling past it, at any size. */
+      var now = el.querySelector('.ticks i.now');
+      var ticks = el.querySelector('.ticks');
+      if (now && ticks) {
+        now.style.transform = 'translateX(0px)';
+        var overflow = now.getBoundingClientRect().right - ticks.getBoundingClientRect().right;
+        if (overflow > 0) now.style.transform = 'translateX(' + (-overflow) + 'px)';
+      }
     }
     fit();
     addEventListener('resize', fit, { passive: true });
