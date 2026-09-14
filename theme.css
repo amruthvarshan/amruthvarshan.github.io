@@ -683,7 +683,7 @@ footer .soc:hover{color:var(--accent); transform:translateY(-2px)}
   .stmt{max-width:none; font-size:clamp(21px,6vw,26px)}
   .cta .btn{flex:1 1 auto; text-align:center}
   .card{flex-basis:min(78vw,300px); min-height:230px}
-  .qcard{flex-basis:min(84vw,360px); padding:24px 22px 26px; border-left:1px solid var(--rule)}
+  .qcard{flex-basis:min(84vw,360px); padding:24px 22px 26px}
   .card:hover,.qcard:hover{transform:none; box-shadow:none}
   .chart{--barh:32px}
   /* Groups are chips now (see .grp li above), not stacked plain text, so
