@@ -139,7 +139,7 @@ window.SITE =
   ],
   "pdfButtons": {
     "preview": {
-      "enabled": true,
+      "enabled": false,
       "text": "Preview CV",
       "style": "outline"
     },
