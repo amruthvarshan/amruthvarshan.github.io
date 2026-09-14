@@ -121,7 +121,7 @@ window.SITE =
 {
   "nav": [
     {
-      "text": "Projects",
+      "text": "Showcase",
       "href": "#work"
     },
     {
@@ -139,7 +139,7 @@ window.SITE =
   ],
   "pdfButtons": {
     "preview": {
-      "enabled": false,
+      "enabled": true,
       "text": "Preview CV",
       "style": "outline"
     },
@@ -156,11 +156,11 @@ window.SITE =
   "title": [
     "Experienced Generalist Designer"
   ],
-  "statement": "I design words, worlds, and systems. Fluent across the development pipeline to be useful in most rooms.",
-  "rev": "rev. 2026",
+  "statement": "I design words, worlds, and systems. Fluent enough across the development pipeline to be useful in most rooms.",
+  "rev": "v. 2026",
   "availability": {
     "open": true,
-    "text": "Open to roles"
+    "text": "Open to roles on projects that interest me"
   },
   "heroButtons": [
     {
@@ -195,7 +195,7 @@ window.SITE =
         "title": "Styx & Stones",
         "meta": "LD53 · Game & Narrative Design",
         "pdf": true,
-        "line": "Endless runner made in 72h for the Ludum Dare 53. In charge of game and narrative design.",
+        "line": "Endless runner made in 72h for Ludum Dare 53. In charge of game and narrative design.",
         "href": "https://baconeta.itch.io/styx-and-stones"
       },
       {
@@ -332,10 +332,34 @@ window.SITE =
         "to": null,
         "dates": "2025 - Present",
         "tone": "accent",
-        "line": "",
-        "detail": [],
-        "print": [],
-        "tags": []
+        "line": "Reviving live-ops for The Wizard of Oz Magic Match 3 (released in 2016)",
+        "detail": [
+          "Thorough and detailed technical design documentation",
+          "Rapid and high-fidelity playable design prototypes with AI tools",
+          "Long-term thinking for roadmap planning and product strategy",
+          "Guidance for younger designers on live-ops and game design",
+          "Data-driven gameplay balancing for features and events",
+          "Establishment and optimisation of production processes",
+          "Design of compelling gameplay systems and experiences",
+          "Alignment of design quality and business goals"
+        ],
+        "print": [
+          "Thorough and detailed technical design documentation",
+          "Rapid and high-fidelity playable design prototypes with AI tools",
+          "Long-term thinking for roadmap planning and product strategy",
+          "Guidance for younger designers on live-ops and game design",
+          "Data-driven gameplay balancing for features and events",
+          "Establishment and optimisation of production processes",
+          "Design of compelling gameplay systems and experiences",
+          "Alignment of design quality and business goals"
+        ],
+        "tags": [
+          "Roadmap",
+          "Product",
+          "AI Prototyping",
+          "Vision",
+          "Mentorship"
+        ]
       },
       {
         "company": "Rovio",
@@ -345,53 +369,71 @@ window.SITE =
         "to": 2025.9,
         "dates": "2022 - 2025",
         "tone": "ink",
-        "line": "Angry Birds Dream Blast — levels, UI copy, C# tooling",
+        "line": "Live-ops, levels, and design for Angry Birds Dream Blast",
         "detail": [
-          "Designed and tuned levels for Angry Birds Dream Blast, a live puzzle game running a continuous content pipeline.",
-          "Wrote narrative copy for features, events and UI screens, holding voice consistent across a decades-old IP.",
-          "Shipped C# fixes to the in-house level editor, cutting friction for the whole design team.",
-          "Researched procedural narrative systems and pitched how they could serve a live-ops content cadence."
+          "Designed spreadsheet tools to optimise content management",
+          "Refined and documented processes to improve pipelines",
+          "Evaluated editor tools and designed improvements",
+          "Onboarded new hires on processes and tools",
+          "Prototyped and iterated to polish game mechanics",
+          "Worked with Art & Audio to unify the narrative of mechanics",
+          "Assisted the team with technical setup and development tools",
+          "Balanced level content carefully to curated the player experience",
+          "Liaised with internal & external partners to unify quality guidelines",
+          "Researched procedural narrative systems on learning days"
         ],
         "print": [
-          "Designed and tuned levels for Angry Birds Dream Blast on a continuous live-ops pipeline.",
-          "Wrote narrative copy for features, events and UI screens across the Angry Birds IP.",
-          "Shipped C# fixes to the in-house level editor, reducing friction for the design team."
+          "Designed spreadsheet tools to optimise content management",
+          "Refined and documented processes to improve pipelines",
+          "Evaluated editor tools and designed improvements",
+          "Onboarded new hires on processes and tools",
+          "Assisted the team with technical setup and development tools",
+          "Balanced level content carefully to curated the player experience",
+          "Mentored juniors on designing for casual games",
+          "Liaised with internal & external partners to unify quality guidelines"
         ],
         "tags": [
-          "Level design",
-          "UI writing",
-          "C#",
-          "Live ops"
+          "2D Level Design",
+          "Processes",
+          "Mentorship",
+          "Technical Design",
+          "Tools"
         ]
       },
       {
         "company": "Zynga",
         "role": "Narrative Designer",
-        "where": "Bengaluru, India",
+        "where": "Bangalore, India",
         "from": 2019.75,
         "to": 2022.825,
         "dates": "2019 - 2022",
         "tone": "accent",
-        "line": "Willy Wonka, The Wizard of Oz — narrative systems, in-engine",
+        "line": "Learned writing for an established IP (Willy Wonka)",
         "detail": [
-          "Designed gameplay features and the narrative systems that carried them.",
-          "Wrote character, story, dialogue and UI copy inside the constraints of licensed IP approval.",
-          "Built contextual narrative that justified game mechanics rather than decorating them.",
-          "Implemented narrative in-engine rather than handing scripts off to someone else.",
-          "Produced content that kept live games running for five-plus years.",
-          "Mentored new designers through onboarding and their first shipped features."
+          "Detailed design docs for gameplay features and narrative systems",
+          "Character, story, dialogue, flavour, UI writing",
+          "In-engine technical implementation of narrative",
+          "Content to sustain live games for 5+ years",
+          "Match-3 level design using Unity (designed 300+ & reviewed 1500+)",
+          "Expansive writing on established IPs (Willy Wonka, Wizard of Oz)",
+          "Code (C#) fixes for custom, in-house match-3 level editor",
+          "Mentoring new hires on level design"
         ],
         "print": [
-          "Designed narrative systems and wrote character, story, dialogue and UI copy for licensed IPs (Willy Wonka, The Wizard of Oz).",
-          "Implemented narrative in-engine; produced content sustaining live games for 5+ years.",
-          "Mentored new design hires through onboarding and first shipped features."
+          "Gameplay features and narrative systems",
+          "Character, story, dialogue & UI writing",
+          "Contextual narrative for game mechanics",
+          "In-engine implementation of narrative",
+          "Content to sustain live games for 5+ years",
+          "Match-3 level design using Unity",
+          "Code fixes (C#) for in-house level editor"
         ],
         "tags": [
-          "Narrative systems",
-          "Dialogue",
-          "Licensed IP",
-          "In-engine",
-          "Mentoring"
+          "Narrative Systems",
+          "2D Level Design",
+          "Implementation",
+          "Scripting",
+          "Licensed IP"
         ]
       },
       {
@@ -402,18 +444,21 @@ window.SITE =
         "to": 2019.75,
         "dates": "Jan - Sep 2019",
         "tone": "ink",
-        "line": "Ghost Recon Breakpoint — through to console release",
+        "line": "Tom Clancy's Ghost Recon Breakpoint shipped on PC & console",
         "detail": [
-          "Tested Tom Clancy's Ghost Recon Breakpoint across builds and platforms.",
-          "Worked daily in debug tooling and JIRA, learning how a AAA console pipeline actually moves."
+          "Deployed comprehensive test cases for PvE missions",
+          "Built proficiency with JIRA and game debug tools",
+          "Learned the basics of game development and production",
+          "Compiled detailed quality reports on overall build health"
         ],
         "print": [
-          "Tested Tom Clancy's Ghost Recon Breakpoint; daily work in debug tooling and JIRA."
+          "Tested Tom Clancy’s Ghost Recon Breakpoint",
+          "Built proficiency with game debug tools and JIRA"
         ],
         "tags": [
           "QA",
           "JIRA",
-          "Console"
+          "Production"
         ]
       },
       {
@@ -424,17 +469,19 @@ window.SITE =
         "to": 2018.9,
         "dates": "Mar - Nov 2018",
         "tone": "muted",
-        "line": "Editorial oversight of the marketing team, UI copy",
+        "line": "Led the content marketing team through a website rebrand",
         "detail": [
-          "Held editorial oversight of the marketing team's output.",
-          "Wrote UI copy and a wide range of campaign collateral."
+          "Opinion pieces on subjects of data and finance",
+          "Editorial oversight of company communications",
+          "Upkeep of multiple company websites"
         ],
         "print": [
-          "Editorial oversight of the marketing team; UI copy and campaign collateral."
+          "Editorial oversight of the marketing team"
         ],
         "tags": [
           "Editorial",
-          "UI copy"
+          "UI copy",
+          "Direction"
         ]
       },
       {
@@ -445,15 +492,18 @@ window.SITE =
         "to": 2017.5,
         "dates": "2016 - 2017",
         "tone": "muted",
-        "line": "Product and marketing content to a continuous schedule",
+        "line": "UI copy and varied marketing collateral",
         "detail": [
-          "Wrote product and marketing content to a steady publishing schedule."
+          "Product, website and social media copy, newsletters, articles, and more",
+          "Conceptualised and executed marketing campaigns from start-to-finish",
+          "Created engaging material in various forms such as infographics and whitepapers"
         ],
         "print": [
-          "Product and marketing copy to a continuous publishing schedule."
+          "UI copy and varied marketing collateral"
         ],
         "tags": [
-          "Copywriting"
+          "Copywriting",
+          "Marketing"
         ]
       }
     ]
@@ -555,11 +605,11 @@ window.SITE =
           },
           {
             "name": "Unreal",
-            "tier": 2
+            "tier": 3
           },
           {
-            "name": "Jira",
-            "tier": 1
+            "name": "Mentorship",
+            "tier": 2
           },
           {
             "name": "Collaboration",
@@ -589,25 +639,25 @@ window.SITE =
   "education": {
     "heading": "Education",
     "byline": "",
-    "subtitle": "before games",
+    "subtitle": "background",
     "items": [
       {
         "award": "B.E., Electrical & Electronics Engineering",
         "school": "SASTRA University",
-        "dates": "2012 — 2016",
-        "note": "Wrote, directed and produced stage plays at universities across South India."
+        "dates": "2012 - 2016",
+        "note": "Wrote, directed, and produced stage plays at universities across South India."
       }
     ]
   },
   "about": {
     "heading": "About",
     "byline": "",
-    "subtitle": "since 2016",
-    "marginLabel": "Stage first",
-    "marginNote": "then games",
+    "subtitle": "who i am",
+    "marginLabel": "a writer turned",
+    "marginNote": "generalist designer",
     "paragraphs": [
-      "I started out writing, directing and producing stage plays at universities across South India. Games turned out to be the same job with better tools and a far less forgiving audience.",
-      "Since then: Ghost Recon, Angry Birds, Willy Wonka, The Wizard of Oz. Worlds that already had rules I didn't write, and room found in them anyway."
+      "Hi there! My name is Amruth Varshan and I'm an expert at designing words, worlds, and systems. I'm fluent enough across the game development pipeline to be useful in most rooms.",
+      "I have a strong understanding of the tools and technology involved, and the ability to creatively circumvent their limitations. I want to become a creative director for games."
     ]
   },
   "contact": [

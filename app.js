@@ -6,6 +6,9 @@
    Exposes window.UI:
 
      UI.esc(str)                  HTML-escape
+     UI.years(from,to)            "4 yrs" / "9 mo" — computed, never typed
+     UI.slug(str)                 stable anchor id from a company name
+     UI.axisFor(career)           derive the timeline range from the roles
      UI.theme()                   wire the light/dark toggle
      UI.reveal()                  scroll reveal + chart growth
      UI.nav()                     sliding underline + active section
@@ -14,10 +17,6 @@
      UI.carousel(el)              turn a .carousel into a working one
      UI.chart(el, career, opts)   the career timeline
          opts.expand : true → rows expand in place to show full detail
-
-   years(from,to), slug(str) and axisFor(career) are internal helpers used
-   only by chart() — they used to be exposed on UI too, but nothing outside
-   this file ever called them that way, so they're private now.
 
    MOTION CONTRACT
      Nothing animates on its own. Everything is driven by the pointer or the
@@ -487,9 +486,28 @@ window.UI = (function () {
         row.classList.toggle('open', on);
         row.querySelector('.crowbtn').setAttribute('aria-expanded', on ? 'true' : 'false');
       };
+
+      var all = document.getElementById('expand-all');
+      /* The label always describes what clicking the button will do next,
+         recomputed from every row's real current state — never a flag
+         that only the button's own click updates. That's what keeps it
+         honest when a reader opens or closes rows individually instead
+         of through this button: with any row still closed, it reads
+         "Expand all" (that IS what clicking it would do); only once
+         every row is open does it switch to "Collapse all". A mixed
+         state (some open, some closed) reads the same as all-closed,
+         since that matches what the button actually does from there —
+         expand the rest, not collapse what's already open. */
+      function syncExpandAll() {
+        if (!all) return;
+        var anyClosed = rowEls.some(function (r) { return !r.classList.contains('open'); });
+        all.textContent = anyClosed ? career.expandAllText : 'Collapse all';
+      }
+
       rowEls.forEach(function (row) {
         row.querySelector('.crowbtn').addEventListener('click', function () {
           open(row, !row.classList.contains('open'));
+          syncExpandAll();
         });
       });
 
@@ -505,18 +523,18 @@ window.UI = (function () {
         }, 260);
       }
 
-      var all = document.getElementById('expand-all');
       if (all) all.addEventListener('click', function () {
         var anyClosed = rowEls.some(function (r) { return !r.classList.contains('open'); });
         rowEls.forEach(function (r) { open(r, anyClosed); });
-        all.textContent = anyClosed ? 'Collapse all' : 'Expand all';
+        syncExpandAll();
       });
+      syncExpandAll();
     }
   }
 
   return {
     calm: CALM, fine: FINE, now: NOW,
-    esc: esc,
+    esc: esc, years: years, slug: slug, axisFor: axisFor, tierLabel: tierLabel,
     theme: theme, reveal: reveal, nav: nav, progress: progress,
     glance: glance, carousel: carousel, chart: chart
   };
