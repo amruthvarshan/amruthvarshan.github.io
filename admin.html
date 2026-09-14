@@ -372,6 +372,18 @@ const HEADER = `/* =============================================================
    WRITING
      \`excerpt\` is the opening of the piece, 25–45 words — not a summary.
      \`readMoreText\` is the one button label shared by every writing card.
+
+   CONTACT / PDFCONTACT
+     \`contact\` is the footer's list — the first entry is the email line,
+     everything after it becomes a social icon (matched by \`text\` against
+     a fixed icon set in index.html; an unrecognised name falls back to
+     plain text rather than breaking). \`pdfContact\` is a separate, shorter
+     list for the PDF header specifically — deliberately independent of
+     \`contact\` rather than a filtered view of it, since the two rarely
+     want the same items in the same order (the PDF has no room for every
+     social link, and wants the portfolio URL itself, which the footer
+     doesn't need since visitors are already on it). Editing one never
+     affects the other.
    ========================================================================== */
 
 `;
@@ -472,6 +484,8 @@ const SCHEMA = { type:"object", fields: {
     paragraphs: { type:"array", label:"About paragraphs", of:{type:"textarea"} }
   }},
   contact: { type:"array", label:"Contact links (footer)", itemLabel:v=>v.text||"(untitled)",
+    of:{type:"object", fields:{ text:{type:"text", label:"Label"}, href:{type:"text", label:"URL"} }}},
+  pdfContact: { type:"array", label:"PDF header contact links", itemLabel:v=>v.text||"(untitled)",
     of:{type:"object", fields:{ text:{type:"text", label:"Label"}, href:{type:"text", label:"URL"} }}}
 }};
 

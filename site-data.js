@@ -97,6 +97,18 @@
    WRITING
      `excerpt` is the opening of the piece, 25–45 words — not a summary.
      `readMoreText` is the one button label shared by every writing card.
+
+   CONTACT / PDFCONTACT
+     `contact` is the footer's list — the first entry is the email line,
+     everything after it becomes a social icon (matched by `text` against
+     a fixed icon set in index.html; an unrecognised name falls back to
+     plain text rather than breaking). `pdfContact` is a separate, shorter
+     list for the PDF header specifically — deliberately independent of
+     `contact` rather than a filtered view of it, since the two rarely
+     want the same items in the same order (the PDF has no room for every
+     social link, and wants the portfolio URL itself, which the footer
+     doesn't need since visitors are already on it). Editing one never
+     affects the other.
    ========================================================================== */
 
 window.SITE =
@@ -531,6 +543,20 @@ window.SITE =
     {
       "text": "Medium",
       "href": "https://amruthvarshan.medium.com/"
+    }
+  ],
+  "pdfContact": [
+    {
+      "text": "amruthvarshan@gmail.com",
+      "href": "mailto:amruthvarshan@gmail.com"
+    },
+    {
+      "text": "amruthvarshan.github.io",
+      "href": "https://amruthvarshan.github.io/"
+    },
+    {
+      "text": "LinkedIn",
+      "href": "https://www.linkedin.com/in/amruthvarshan/"
     }
   ]
 };

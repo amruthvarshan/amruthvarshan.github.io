@@ -520,7 +520,7 @@
     '<div class="ph">' +
       '<div><h1>' + esc(d.name.first) + ' <span class="last">' + esc(d.name.last) + '</span></h1>' +
         '<div class="t">' + d.title.map(esc).join(' · ') + '</div></div>' +
-      '<div class="c">' + d.contact.map(function (c) { return '<a href="' + esc(c.href) + '">' + esc(c.text) + '</a>'; }).join('<br>') + '</div>' +
+      '<div class="c">' + d.pdfContact.map(function (c) { return '<a href="' + esc(c.href) + '"' + EXT + '>' + esc(c.text) + '</a>'; }).join('<br>') + '</div>' +
     '</div>' +
     '<div class="rule"></div>' +
     '<p class="pitch">' + esc(d.statement) + '</p>' +
