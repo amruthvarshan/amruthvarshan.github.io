@@ -102,25 +102,38 @@ in the sense that anyone who finds the URL can open it — the repo is public,
 so there's no hiding the path — but it ships with no credential in it and is
 useless to a stranger without one.
 
-**Reading is free.** "Load from GitHub (read-only)" fetches `site-data.js`
-straight from GitHub with no token at all, since GitHub's API allows
-unauthenticated `GET`s against public repos. This is what lets you open the
-form, edit, and preview on any machine — even one that's never seen your
-token — at GitHub's lower unauthenticated rate limit (60 requests/hour per
-IP, which is plenty for an editing session). "Load local copy (no token)"
-is the same idea for testing entirely offline: it reads whatever
-`site-data.js` sits next to `admin.html` on whatever's serving the page,
-with no network call to GitHub at all.
+**Reading is free.** Click **Connect** with the token field empty and it
+fetches `site-data.js` straight from GitHub with no token at all, since
+GitHub's API allows unauthenticated `GET`s against public repos. This is
+what lets you open the form, edit, and preview on any machine — even one
+that's never seen your token — at GitHub's lower unauthenticated rate limit
+(60 requests/hour per IP, which is plenty for an editing session).
+**Local copy** is the same idea for testing entirely offline: it reads
+whatever `site-data.js` sits next to `admin.html` on whatever's serving the
+page, with no network call to GitHub at all.
 
 **Saving needs a token.** Paste a fine-grained GitHub personal access token
-(scoped to just this repo, Contents: read and write) and click "Connect &
-enable saving." If you already loaded data read-only, connecting doesn't
+(scoped to just this repo, Contents: read and write) into the field and
+click **Connect** again. If you already loaded data read-only, this doesn't
 re-fetch and risk discarding edits you've made since — it just validates the
 token and unlocks the Save button against the same file version you're
-already looking at. "Save to GitHub" is disabled until both a real file
-version and a token are present; "Download file" always works once
+already looking at. Connect is one button either way — an empty token field
+means "just read," a filled one means "read (if nothing's loaded yet) and
+enable saving." **Save to GitHub** is disabled until both a real file
+version and a token are present; **Download file** always works once
 something's loaded, token or not, as a save-nothing way to inspect the
 generated output.
+
+On narrow screens, the header and footer both collapse — a small chevron
+sits on the border between them and the rest of the page (pointing up on
+the header, down on the footer, reversing once collapsed) — so the token
+row and the save row don't permanently eat most of the screen on a phone.
+Collapsed, the header keeps just the logo and the theme toggle above the
+line and the Editor/Preview tabs below it; the footer collapses away
+entirely, including the validation warnings beneath it. Neither is
+persisted between visits — both start expanded on load. Desktop is
+unaffected; there's nothing to collapse when there's already room for
+everything.
 
 The live preview pane renders the actual `index.html`/`theme.css`/`app.js`
 with your in-progress edits substituted in — including the print sheet,
