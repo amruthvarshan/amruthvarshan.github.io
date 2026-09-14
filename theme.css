@@ -370,10 +370,9 @@ section{padding:clamp(56px,7.4vw,100px) 0}
 
 /* --- writing card --- */
 .qcard{flex:0 0 clamp(290px,36vw,470px); scroll-snap-align:start;
-  padding:28px 30px 30px; border-left:1px solid var(--rule);
+  padding:28px 30px 30px;
   display:flex; flex-direction:column;
   transition:background-color var(--mid)}
-.qcard:first-child{border-left:0}
 .qcard:hover{background:var(--raise)}
 .qcard .form{display:flex; justify-content:space-between; gap:14px; align-items:baseline;
   font:400 12.5px/1 "Inter Tight",sans-serif; color:var(--faint); margin-bottom:14px}
