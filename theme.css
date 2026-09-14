@@ -280,7 +280,7 @@ section{padding:clamp(56px,7.4vw,100px) 0}
    child means it only ever matches the actual note span, regardless of
    what .num or anything else inside b is later named. */
 .lead > span{display:block; font:400 13px/1.4 "Inter Tight",sans-serif; color:var(--muted); margin-top:9px; max-width:14ch}
-.grp h4{font:500 10.5px/1 "Inter Tight",sans-serif; letter-spacing:.17em; text-transform:uppercase;
+.grp h4{font:500 10.5px/1 "Inter Tight",sans-serif; letter-spacing:.17em;
   color:var(--faint); margin:0 0 11px}
 /* Chips, not a stacked list — the same fix that made the CV section's
    tags and the PDF's Tools list readable: flowing items in a line need

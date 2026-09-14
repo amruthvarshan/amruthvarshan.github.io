@@ -115,7 +115,7 @@ window.SITE =
 {
   "nav": [
     {
-      "text": "Work",
+      "text": "Projects",
       "href": "#work"
     },
     {
@@ -129,21 +129,17 @@ window.SITE =
     {
       "text": "Skills",
       "href": "#skills"
-    },
-    {
-      "text": "Education",
-      "href": "#education"
     }
   ],
   "pdfButtons": {
     "preview": {
-      "enabled": true,
+      "enabled": false,
       "text": "Preview PDF",
       "style": "outline"
     },
     "save": {
       "enabled": true,
-      "text": "Save PDF",
+      "text": "Download CV",
       "style": "solid"
     }
   },
@@ -152,11 +148,9 @@ window.SITE =
     "last": "Varshan"
   },
   "title": [
-    "Game designer",
-    "Narrative designer",
-    "Writer"
+    "Experienced Generalist Designer"
   ],
-  "statement": "I build the systems that make a story happen, then write the words that land in them.",
+  "statement": "I design words, worlds, and systems. Fluent across the development pipeline to be useful in most rooms.",
   "rev": "rev. 2026",
   "availability": {
     "open": true,
@@ -164,72 +158,86 @@ window.SITE =
   },
   "heroButtons": [
     {
-      "text": "See the work",
+      "text": "Showcase",
       "href": "#work",
       "style": "solid"
     },
     {
-      "text": "See the career",
-      "href": "#career",
-      "style": "outline"
+      "text": "Writing",
+      "href": "#writing",
+      "style": "solid"
     },
     {
-      "text": "Get in touch",
-      "href": "mailto:amruthvarshan@gmail.com",
+      "text": "Career",
+      "href": "#career",
       "style": "outline"
     }
   ],
   "work": {
-    "heading": "Work",
-    "byline": "Jam games, solo builds and branching text. Everything here is playable — nothing is behind a download.",
+    "heading": "Showcase",
+    "byline": "Some of the endeavours I've embarked on over the course of my career, from game jams to personal learning projects.",
     "countLabel": "projects",
     "items": [
       {
         "title": "Setting the Stage",
-        "meta": "LD54 · lead writer & designer",
+        "meta": "LD54 · Lead Writer & Designer",
         "pdf": true,
-        "line": "A musical narrative puzzle game built in 72 hours. Third place for audio.",
+        "line": "Musical, narrative puzzle game made in 72h for LD 54. Placed 3rd in the Audio category.",
         "href": "https://baconeta.itch.io/setting-the-stage"
       },
       {
-        "title": "Eva",
-        "meta": "GMTK · narrative systems",
-        "pdf": true,
-        "line": "An endless space shooter with one strange mechanic, written in 48 hours.",
-        "href": "https://amruthvarshan.itch.io/eva"
-      },
-      {
-        "title": "Course Correction",
-        "meta": "Twine · branching dialogue",
-        "line": "The opening of a text RPG where every choice costs you something.",
-        "href": "https://amruthvarshan.github.io/downloads/Course Correction.html"
-      },
-      {
         "title": "Styx & Stones",
-        "meta": "LD53 · game & narrative design",
+        "meta": "LD53 · Game & Narrative Design",
         "pdf": true,
-        "line": "An endless runner through the underworld. Unity, 72 hours, no sleep.",
+        "line": "Endless runner made in 72h for the Ludum Dare 53. In charge of game and narrative design.",
         "href": "https://baconeta.itch.io/styx-and-stones"
       },
       {
-        "title": "Harriet",
-        "meta": "Godot · solo",
+        "title": "Eva",
+        "meta": "GMTK 2021 · Writing & Narrative Systems",
         "pdf": true,
-        "line": "A small platformer built from scratch to learn the engine.",
+        "line": "Endless space shooter with a unique mechanic made in 48h. Game & SFX design + sourcing.",
+        "href": "https://amruthvarshan.itch.io/eva"
+      },
+      {
+        "title": "Wyrglade",
+        "meta": "Twine · Dialogue Choices",
+        "line": "Created as part of a design test to demonstrate the reactivity of NPC dialogue to player agency.",
+        "href": "https://amruthvarshan.github.io/downloads/The%20Approach%20to%20Wyrglade.html"
+      },
+      {
+        "title": "Harriet",
+        "meta": "Godot · Learning Project",
+        "pdf": true,
+        "line": "A simple 2D platformer with a quirky flavour. Scripting and levels designed from scratch.",
         "href": "https://amruthvarshan.itch.io/harriet"
       },
       {
-        "title": "Loony Libs",
-        "meta": "Godot · solo",
-        "line": "A desperate hermit's mad libs, with a very specific sense of humour.",
-        "href": "https://amruthvarshan.itch.io/loony-libs"
+        "title": "Course Correction",
+        "meta": "Twine · Branching Dialogue",
+        "line": "Opening sequence of a text-based role-playing experience with a branching narrative.",
+        "href": "https://amruthvarshan.github.io/downloads/Course Correction.html"
+      },
+      {
+        "title": "Star Wars RPG",
+        "meta": "Twine · Star Wars",
+        "pdf": false,
+        "line": "Player-driven narrative test with branching dialogue to evaluate IP-driven writing & design.",
+        "href": "https://amruthvarshan.github.io/aspyr-writing-test/scene-one.html"
+      },
+      {
+        "title": "Tricky Life",
+        "meta": "Twine · Life Sim",
+        "pdf": false,
+        "line": "Narrative systems vertical slice for a casual life sim game on mobile. Created for a design test.",
+        "href": "https://amruthvarshan.github.io/downloads/tricky-life.html"
       }
     ]
   },
   "writing": {
     "heading": "Writing",
-    "byline": "Prose and verse, opening lines first. Read a piece here, then take the rest if you want it.",
-    "countLabel": "pieces",
+    "byline": "A selective assortment of my work  to display my skill with language, and versatility with style, in various literary formats.",
+    "countLabel": "works",
     "readMoreText": "Read the rest",
     "items": [
       {
@@ -263,18 +271,31 @@ window.SITE =
     ]
   },
   "career": {
-    "heading": "Where I've been",
-    "byline": "Read it as a chart: each bar sits where it actually happened, and its length is how long it lasted. Click any row for the full detail.",
+    "heading": "Career",
+    "byline": "A brief history of my experience with some of the biggest names in games, and my work on some of the biggest IPs.",
     "countLabel": "roles",
     "expandAllText": "Expand all",
     "roles": [
       {
+        "company": "Zynga",
+        "role": "Senior Game Designer",
+        "where": "Bangalore, India",
+        "from": 2025.9,
+        "to": null,
+        "dates": "2025 - Present",
+        "tone": "accent",
+        "line": "",
+        "detail": [],
+        "print": [],
+        "tags": []
+      },
+      {
         "company": "Rovio",
-        "role": "Level Designer",
+        "role": "Senior Level Designer",
         "where": "Espoo, Finland",
-        "from": 2022,
-        "to": 2026,
-        "dates": "2022 — 2026",
+        "from": 2022.9,
+        "to": 2025.9,
+        "dates": "2022 - 2025",
         "tone": "ink",
         "line": "Angry Birds Dream Blast — levels, UI copy, C# tooling",
         "detail": [
@@ -300,8 +321,8 @@ window.SITE =
         "role": "Narrative Designer",
         "where": "Bengaluru, India",
         "from": 2019.75,
-        "to": 2022,
-        "dates": "2019 — 2022",
+        "to": 2022.825,
+        "dates": "2019 - 2022",
         "tone": "accent",
         "line": "Willy Wonka, The Wizard of Oz — narrative systems, in-engine",
         "detail": [
@@ -331,8 +352,8 @@ window.SITE =
         "where": "Pune, India",
         "from": 2019,
         "to": 2019.75,
-        "dates": "Jan — Sep 2019",
-        "tone": "muted",
+        "dates": "Jan - Sep 2019",
+        "tone": "ink",
         "line": "Ghost Recon Breakpoint — through to console release",
         "detail": [
           "Tested Tom Clancy's Ghost Recon Breakpoint across builds and platforms.",
@@ -353,7 +374,7 @@ window.SITE =
         "where": "Chennai, India",
         "from": 2018.2,
         "to": 2018.9,
-        "dates": "Mar — Nov 2018",
+        "dates": "Mar - Nov 2018",
         "tone": "muted",
         "line": "Editorial oversight of the marketing team, UI copy",
         "detail": [
@@ -374,7 +395,7 @@ window.SITE =
         "where": "Chennai, India",
         "from": 2016.5,
         "to": 2017.5,
-        "dates": "2016 — 2017",
+        "dates": "2016 - 2017",
         "tone": "muted",
         "line": "Product and marketing content to a continuous schedule",
         "detail": [
