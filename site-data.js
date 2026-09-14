@@ -127,14 +127,14 @@ window.SITE =
       "href": "#career"
     },
     {
-      "text": "Skills",
+      "text": "Summary",
       "href": "#skills"
     }
   ],
   "pdfButtons": {
     "preview": {
       "enabled": false,
-      "text": "Preview PDF",
+      "text": "Preview CV",
       "style": "outline"
     },
     "save": {
@@ -411,22 +411,22 @@ window.SITE =
     ]
   },
   "glance": {
-    "heading": "At a glance",
-    "byline": "Worlds, studios, disciplines and tools. Hover any tool for how deep that skill goes.",
-    "subtitle": "breadth",
+    "heading": "Summary",
+    "byline": "A compilation of my journey over the years – the skills I've picked up, the IPs I've contributed to, and the experience I've accumulated.",
+    "subtitle": "proficiencies",
     "lead": {
       "value": "8",
       "unit": "yrs",
-      "note": "across five studios"
+      "note": "across three global studios"
     },
     "tierLabels": {
       "1": "Expert",
-      "2": "Strong",
-      "3": "Working"
+      "2": "Advanced",
+      "3": "Strong"
     },
     "groups": [
       {
-        "label": "Worlds",
+        "label": "IPs",
         "items": [
           {
             "name": "Angry Birds"
@@ -443,7 +443,7 @@ window.SITE =
         ]
       },
       {
-        "label": "Studios",
+        "label": "STUDIOS",
         "items": [
           {
             "name": "Rovio"
@@ -453,41 +453,41 @@ window.SITE =
           },
           {
             "name": "Ubisoft"
-          },
-          {
-            "name": "DataTracks"
-          },
-          {
-            "name": "Freshworks"
           }
         ]
       },
       {
-        "label": "Disciplines",
+        "label": "DISCIPLINES",
         "items": [
           {
-            "name": "Narrative design"
+            "name": "Narrative Design",
+            "tier": 1
           },
           {
-            "name": "Systems design"
+            "name": "Systems Design",
+            "tier": 1
           },
           {
-            "name": "Technical design"
+            "name": "Roguelite Design",
+            "tier": 2
           },
           {
-            "name": "Quest design"
+            "name": "Combat Design",
+            "tier": 2
           },
           {
-            "name": "Combat design"
-          },
-          {
-            "name": "Roguelite design"
+            "name": "Technical Design",
+            "tier": 3
           }
         ]
       },
       {
-        "label": "Tools",
+        "label": "SKILLS",
         "items": [
+          {
+            "name": "Writing",
+            "tier": 1
+          },
           {
             "name": "Twine",
             "tier": 1
@@ -497,28 +497,40 @@ window.SITE =
             "tier": 2
           },
           {
-            "name": "articy",
+            "name": "Scripting",
             "tier": 2
           },
           {
-            "name": "Godot",
+            "name": "Documentation",
+            "tier": 1
+          },
+          {
+            "name": "Unreal",
             "tier": 2
           },
           {
             "name": "Jira",
-            "tier": 2
+            "tier": 1
           },
           {
-            "name": "C#",
+            "name": "Collaboration",
+            "tier": 1
+          },
+          {
+            "name": "Godot",
             "tier": 3
+          },
+          {
+            "name": "Tooling",
+            "tier": 2
           }
         ]
       },
       {
-        "label": "Based",
+        "label": "CURRENTLY",
         "items": [
           {
-            "name": "Espoo, Finland"
+            "name": "Bangalore, India"
           }
         ]
       }
