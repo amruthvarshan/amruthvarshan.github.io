@@ -535,7 +535,7 @@
       }).join('') +
     '</div><div class="side">' +
       d.glance.groups.filter(function (g) {
-        return ['Disciplines', 'Tools'].indexOf(g.label) > -1;
+        return g.pdf;
       }).map(function (g) {
         return '<section><h2>' + esc(g.label).toUpperCase() + '</h2>' + chipsList(g) + '</section>';
       }).join('') +

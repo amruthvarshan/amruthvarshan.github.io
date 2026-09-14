@@ -88,6 +88,12 @@
      Renders as a horizontal band below the career chart, five groups by
      default; a sixth wraps cleanly. Items render as chips — keep them to
      2–3 words. Only the "Tools" group is expected to carry `tier`.
+     A group's own `pdf: true` is what pulls it into the CV PDF's side
+     column — same idea as `work` items' `pdf` flag. This used to be
+     decided by matching a group's `label` text ("Disciplines", "Tools")
+     directly, which silently broke the PDF the moment either group was
+     renamed; `pdf` is independent of the label, so renaming a group here
+     never affects whether it shows in the PDF.
 
    WORK
      Renders in the homepage carousel in the order given — there is no
@@ -521,7 +527,8 @@ window.SITE =
             "name": "Technical Design",
             "tier": 3
           }
-        ]
+        ],
+        "pdf": true
       },
       {
         "label": "SKILLS",
@@ -566,7 +573,8 @@ window.SITE =
             "name": "Tooling",
             "tier": 2
           }
-        ]
+        ],
+        "pdf": true
       },
       {
         "label": "CURRENTLY",
