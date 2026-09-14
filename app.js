@@ -405,18 +405,39 @@ window.UI = (function () {
       ) + '</div>';
 
     /* -- label fit ---------------------------------------------------------
-       Computed from the bar's TARGET percentage rather than its currently
-       rendered width, so it is right on the first paint instead of only
-       after the grow animation finishes. */
+       Computed from the bar's TARGET position and width rather than its
+       currently rendered values, so it is right on the first paint instead
+       of only after the grow animation finishes. Tries, in order: inside
+       the bar; to its right, within the track; to its left, within the
+       track; and only hides the label if none of those three have room —
+       which matters specifically for a bar sitting flush against the
+       track's own right edge (a role that just started has a duration bar
+       with barely any width, positioned at 100%): "outside, to the right"
+       has nowhere left to go there, so without the left-side fallback the
+       label would have nowhere to render at all. */
     function fit() {
       [].forEach.call(el.querySelectorAll('.tracked'), function (track) {
         var bar = track.querySelector('.bar');
         var dur = bar && bar.querySelector('.dur');
         if (!dur) return;
-        var target = parseFloat(bar.style.getPropertyValue('--w')) || 0;
-        var px = track.getBoundingClientRect().width * target / 100;
+        var left = parseFloat(bar.style.left) || 0;
+        var w = parseFloat(bar.style.getPropertyValue('--w')) || 0;
+        var trackW = track.getBoundingClientRect().width;
+        var insidePx = trackW * w / 100;
+        var rightPx = trackW * (100 - left - w) / 100;
+        var leftPx = trackW * left / 100;
         var need = (dur.getBoundingClientRect().width || dur.textContent.length * 7.2) + 26;
-        bar.classList.toggle('out', px < need);
+
+        bar.classList.remove('out', 'out-left', 'out-hide');
+        if (insidePx >= need) {
+          /* fits inside — no extra class needed, the default state */
+        } else if (rightPx >= need) {
+          bar.classList.add('out');
+        } else if (leftPx >= need) {
+          bar.classList.add('out-left');
+        } else {
+          bar.classList.add('out-hide');
+        }
       });
     }
     fit();

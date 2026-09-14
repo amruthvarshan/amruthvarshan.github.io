@@ -415,10 +415,16 @@ section{padding:clamp(56px,7.4vw,100px) 0}
   transition:opacity .35s ease .55s, letter-spacing var(--fast)}
 .chart.lit .bar .dur{opacity:1}
 .bar.out .dur{position:absolute; left:calc(100% + 11px); color:var(--muted)}
+.bar.out-left .dur{position:absolute; right:calc(100% + 11px); color:var(--muted)}
 .bar-ink{background:var(--ink); color:var(--block-ink)}
 .bar-accent{background:var(--accent); color:var(--accent-ink)}
 .bar-muted{background:var(--muted); color:var(--paper)}
-.bar.out.bar-ink .dur, .bar.out.bar-accent .dur, .bar.out.bar-muted .dur{color:var(--muted)}
+.bar.out.bar-ink .dur, .bar.out.bar-accent .dur, .bar.out.bar-muted .dur,
+.bar.out-left.bar-ink .dur, .bar.out-left.bar-accent .dur, .bar.out-left.bar-muted .dur{color:var(--muted)}
+/* Last resort only — inside, right and left all genuinely lack room (an
+   extremely narrow track). Rare in practice, but silently dropping the
+   duration is still better than letting it overlap other text. */
+.bar.out-hide .dur{display:none}
 .crow .line{margin:11px 0 0; font:400 13.5px/1.45 "Inter Tight",sans-serif; color:var(--muted);
   transition:color var(--fast)}
 .crow:hover .line{color:var(--ink-2)}
