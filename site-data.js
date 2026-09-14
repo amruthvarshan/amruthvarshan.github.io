@@ -238,35 +238,77 @@ window.SITE =
     "heading": "Writing",
     "byline": "A selective assortment of my work  to display my skill with language, and versatility with style, in various literary formats.",
     "countLabel": "works",
-    "readMoreText": "Read the rest",
+    "readMoreText": "Read more",
     "items": [
       {
         "title": "Mutton",
-        "form": "Short story",
-        "length": "2,400 words",
-        "excerpt": "TODO — paste the opening lines of Mutton here. Around thirty words, so your prose is sampled in the first three seconds with no download and no decision to make.",
+        "form": "Short Story",
+        "length": "1453 words",
+        "excerpt": "I’ve always loved the amber darkness. Once-busy roads bathed in the golden gloom of street lights. The city, her secrets mine and mine alone as her people slumbered...",
         "href": "https://amruthvarshan.github.io/downloads/Mutton.pdf"
       },
       {
         "title": "Siren Song",
-        "form": "Poem",
-        "length": "Ballad",
-        "excerpt": "TODO — paste the first stanza here. A ballad about growing up and finding your place in the world.",
+        "form": "Ballad",
+        "length": "900 words",
+        "excerpt": "Brinehall was its prideful name / What Verdyn used to call his home / At long, at last, he was truly free / To wander wild and freely roam",
         "href": "https://amruthvarshan.github.io/downloads/Siren Song.pdf"
       },
       {
         "title": "Manoeuvre",
-        "form": "Short story",
-        "length": "1,800 words",
-        "excerpt": "TODO — paste the opening here. A subversive medieval fantasy that turns out to be an elaborate punchline. Don't spoil it in the excerpt.",
+        "form": "Short Story",
+        "length": "1,740 words",
+        "excerpt": "Louis felt suffocated, as though he could not move. He was surrounded by people he loved – his queen, his men. Yet, he could not shake the feeling that he was somehow restricted, held back...",
         "href": "https://amruthvarshan.github.io/downloads/Manoeuvre.pdf"
       },
       {
         "title": "Wrought",
         "form": "Poem",
-        "length": "Free verse",
-        "excerpt": "TODO — paste the first stanza here. On the struggle and the delight of making things.",
+        "length": "309 words",
+        "excerpt": "So strange a thing it is, to create / Wrought in passion, sheathed in love / Wrapped in envy, and forged in hate",
         "href": "https://amruthvarshan.github.io/downloads/Wrought.pdf"
+      },
+      {
+        "title": "A Review of Death Stranding",
+        "form": "Game Review",
+        "length": "4545 words",
+        "excerpt": "People say art is subjective. If you ask me, that’s a little reductive. The entire spectrum of human experience is subjective. And art is about the purest way to...",
+        "href": "https://amruthvarshan.medium.com/death-stranding-a-game-where-you-see-dead-people-using-a-foetus-3bc052265c5"
+      },
+      {
+        "title": "Scene Writing Test",
+        "form": "Scene",
+        "length": "2 pages",
+        "excerpt": "Ayana is visiting her aunt, Vina, at the border of the tribal lands. The two women converse about trivial things as Ayana helps...",
+        "href": "https://amruthvarshan.github.io/downloads/Scene.pdf"
+      },
+      {
+        "title": "A Review of Detroit: Become Human",
+        "form": "Game Review",
+        "length": "2893 words",
+        "excerpt": "What is a little girl’s life worth? This is the first question Detroit: Become Human asks you, and it asks it again quite a number of times...",
+        "href": "https://amruthvarshan.medium.com/melodrama-unrealised-potential-a-game-by-david-cage-35dd82c8ec4e"
+      },
+      {
+        "title": "Project Syzygy",
+        "form": "Chapter",
+        "length": "1425 words",
+        "excerpt": "The opening chapter of a WIP sci-fi novel that tries to grapple with how immortality affects purpose.",
+        "href": "https://amruthvarshan.github.io/downloads/Project%20Syzygy.pdf"
+      },
+      {
+        "title": "A Review of Titanfall 2",
+        "form": "Game Review",
+        "length": "2849 words",
+        "excerpt": "Critique is much easier when you’re, well, critical of something. To critique Titanfall 2 then, would be to try and define the unpinnable quality of what constitutes fun...",
+        "href": "https://amruthvarshan.medium.com/titanfall-2-a-game-that-knows-exactly-what-it-is-and-wants-to-be-78f1975aa088"
+      },
+      {
+        "title": "Roses",
+        "form": "Poem",
+        "length": "126 words",
+        "excerpt": "An original comic poem, written based on a writing prompt.",
+        "href": "https://amruthvarshan.github.io/downloads/Roses.pdf"
       }
     ]
   },
