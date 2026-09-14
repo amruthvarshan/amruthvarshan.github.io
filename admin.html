@@ -53,6 +53,19 @@
   html[data-theme="dark"] .tog .sun{display:none}
   html[data-theme="dark"] .tog .moon{display:block}
 
+  /* Hidden by default — desktop has room for everything, so there's
+     nothing to collapse there. Sits exactly on the border header/footer
+     already draw, rather than needing a separate line drawn for it. */
+  .hdr-chevron,.ftr-chevron{display:none; position:absolute; left:50%; width:26px; height:26px;
+    border-radius:50%; border:1px solid var(--rule); background:var(--paper); color:var(--ink);
+    align-items:center; justify-content:center; padding:0; cursor:pointer;
+    transform:translateX(-50%); transition:border-color var(--fast)}
+  .hdr-chevron{bottom:-13px}
+  .ftr-chevron{top:-13px}
+  .hdr-chevron:hover,.ftr-chevron:hover{border-color:var(--accent)}
+  .hdr-chevron svg,.ftr-chevron svg{width:15px; height:15px; transition:transform var(--mid) var(--ease)}
+  .hdr-chevron[aria-expanded="false"] svg,.ftr-chevron[aria-expanded="false"] svg{transform:rotate(180deg)}
+
   /* ---- body split -------------------------------------------------------*/
   main{flex:1; display:grid; grid-template-columns:var(--editor-w) 6px 1fr; min-height:0}
   .pane{min-height:0; display:flex; flex-direction:column; padding:0}
@@ -133,7 +146,7 @@
 
   /* ---- footer / validation ------------------------------------------------*/
   footer{border-top:1px solid var(--rule); background:var(--raise); padding:12px var(--pad);
-    display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap; position:relative}
   .footer-actions{display:flex; gap:8px; flex-wrap:wrap}
   #status{font-size:12.5px; color:var(--muted); flex:1; min-width:200px}
   #commitMsg{flex:2; min-width:200px; font:400 13px "Inter Tight"; padding:8px 10px;
@@ -150,6 +163,13 @@
     .conn input[type="password"]{width:auto; flex:1 1 140px}
     .conn input.branch{flex:0 1 70px}
     #connStatus{width:100%; order:4}
+
+    .hdr-chevron,.ftr-chevron{display:flex}
+    header.collapsed .conn{display:none}
+    footer.collapsed > *:not(.ftr-chevron){display:none}
+    footer.collapsed ~ #validationList{display:none}
+
+    .preview-note{display:none}
 
     .mobile-tabs{display:flex; border-bottom:1px solid var(--rule); background:var(--raise)}
     .mobile-tabs button{flex:1; background:transparent; border:none; border-radius:0;
@@ -178,15 +198,17 @@
   <div class="conn">
     <input type="password" id="tokenInput" placeholder="GitHub token (fine-grained, Contents: read/write)" autocomplete="off">
     <input type="text" id="branchInput" class="branch" placeholder="branch">
-    <button id="loadReadonlyBtn" class="ghost">Load from GitHub (read-only)</button>
-    <button id="connectBtn" class="ghost">Connect &amp; enable saving</button>
-    <button id="loadLocalBtn" class="ghost">Load local copy (no token)</button>
-    <button id="forgetBtn" class="ghost">Forget token</button>
+    <button id="connectBtn" class="ghost" title="No token: loads read-only. With a token: loads and enables saving.">Connect</button>
+    <button id="loadLocalBtn" class="ghost" title="Load site-data.js from this server directly — no GitHub involved.">Local copy</button>
+    <button id="forgetBtn" class="ghost" title="Clear your saved token and disconnect.">Forget</button>
     <span id="connStatus">Not connected.</span>
   </div>
   <button class="tog" id="themeToggle" aria-label="Switch to dark theme">
     <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.4v2.2M12 19.4v2.2M21.6 12h-2.2M4.6 12H2.4M18.8 5.2l-1.6 1.6M6.8 17.2l-1.6 1.6M18.8 18.8l-1.6-1.6M6.8 6.8L5.2 5.2"/></svg>
     <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 1 1 9.4 3.5a6.9 6.9 0 0 0 11.1 11.1z"/></svg>
+  </button>
+  <button class="hdr-chevron" id="hdrChevron" type="button" aria-label="Collapse header" aria-expanded="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>
   </button>
 </header>
 
@@ -202,7 +224,7 @@
       <button class="tab-btn" data-tab="raw">Raw JSON</button>
     </div>
     <div class="tab-body" id="formTab">
-      <p class="empty-note">Connect with a token to load <code>site-data.js</code>.</p>
+      <p class="empty-note">Click <strong>Connect</strong> to load <code>site-data.js</code> — no token needed to read, just to save.</p>
     </div>
     <div class="tab-body" id="rawTab" style="display:none">
       <textarea id="rawJson" spellcheck="false"></textarea>
@@ -224,6 +246,9 @@
 </main>
 
 <footer>
+  <button class="ftr-chevron" id="ftrChevron" type="button" aria-label="Collapse footer" aria-expanded="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
   <input type="text" id="commitMsg" placeholder="Commit message (optional — defaults to &quot;Update site data&quot;)">
   <div class="footer-actions">
     <button id="validateBtn" class="ghost">Validate</button>
@@ -525,7 +550,7 @@ function updateSaveAvailability(){
 
 async function connect(){
   const token = tokenInput.value.trim();
-  if(!token){ connStatus.textContent = "Enter a token first."; return; }
+  if(!token){ await loadFromGitHub(); return; }
   sessionStorage.setItem("gh_token", token);
   connStatus.textContent = "Connecting…";
   try{
@@ -539,7 +564,7 @@ async function connect(){
          on screen; re-fetching now would silently discard any edits
          made since that read-only load. */
       updateSaveAvailability();
-      status.textContent = "Token accepted — you can now save to GitHub.";
+      status.textContent = "Token accepted — saving enabled.";
     }else{
       await loadFromGitHub();
     }
@@ -553,7 +578,7 @@ function forget(){
   sessionStorage.removeItem("gh_token");
   sessionStorage.removeItem("gh_branch");
   tokenInput.value = ""; DATA = null; currentSha = null;
-  formTab.innerHTML = '<p class="empty-note">Load <code>site-data.js</code> to begin — "Load from GitHub" works without a token (read-only); add one any time to enable saving.</p>';
+  formTab.innerHTML = '<p class="empty-note">Click <strong>Connect</strong> to load <code>site-data.js</code> — no token needed to read, just to save.</p>';
   rawJson.value = "";
   preview.srcdoc = "<body style='font-family:sans-serif;color:#888;padding:2em'>Disconnected.</body>";
   saveBtn.disabled = true; downloadBtn.disabled = true;
@@ -582,7 +607,7 @@ async function loadFromGitHub(){
     downloadBtn.disabled = false;
     const readOnly = !sessionStorage.getItem("gh_token");
     status.textContent = `Loaded from GitHub — sha ${currentSha.slice(0,7)}` +
-      (readOnly ? ". Read-only — add a token above and click Connect to enable saving." : "");
+      (readOnly ? ". Read-only — add a token to enable saving." : "");
     if(readOnly) connStatus.textContent = `Read-only — ${CONFIG.owner}/${CONFIG.repo} (${getBranch()})`;
   }catch(e){
     status.textContent = "Load failed: " + e.message;
@@ -606,8 +631,8 @@ async function loadFromLocal(){
     await refreshPreview();
     runValidation();
     saveBtn.disabled = true; downloadBtn.disabled = false;
-    connStatus.textContent = "Local test mode — not connected to GitHub.";
-    status.textContent = "Loaded local copy. Save to GitHub is off; use Download to inspect the generated file.";
+    connStatus.textContent = "Local test mode.";
+    status.textContent = "Loaded local copy. Save disabled — use Download to inspect.";
   }catch(e){
     status.textContent = "Local load failed: " + e.message;
   }
@@ -640,10 +665,10 @@ async function saveData(){
       body: JSON.stringify({ message, content: encodeUtf8Base64(text), sha: currentSha, branch: getBranch() })
     });
     currentSha = res.content.sha;
-    status.textContent = `Saved — commit ${res.commit.sha.slice(0,7)}. Pages will update in about a minute.`;
+    status.textContent = `Saved — commit ${res.commit.sha.slice(0,7)}. Live in ~1 min.`;
   }catch(e){
     if(e.status === 409){
-      status.textContent = "Save conflict: the file changed on GitHub since you loaded it. Reloading — reapply your edits.";
+      status.textContent = "Save conflict — reloading, reapply your edits.";
       await loadFromGitHub();
     }else{
       status.textContent = "Save failed: " + e.message;
@@ -941,9 +966,23 @@ function renderForm(){
    WIRING
    ============================================================================ */
 $("connectBtn").addEventListener("click", connect);
-$("loadReadonlyBtn").addEventListener("click", loadFromGitHub);
 $("loadLocalBtn").addEventListener("click", loadFromLocal);
 $("forgetBtn").addEventListener("click", forget);
+
+/* Mobile-only collapse for the header and footer — see the mobile media
+   query for what actually hides; this just flips the state class and the
+   aria attribute the chevron's own rotation reads. Harmless at desktop
+   widths, where the chevron is display:none and nothing here has any
+   visible effect. */
+function wireCollapse(el, btn){
+  btn.addEventListener("click", () => {
+    const collapsed = el.classList.toggle("collapsed");
+    btn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    btn.setAttribute("aria-label", (collapsed ? "Expand " : "Collapse ") + (el.tagName === "HEADER" ? "header" : "footer"));
+  });
+}
+wireCollapse(document.querySelector("header"), $("hdrChevron"));
+wireCollapse(document.querySelector("footer"), $("ftrChevron"));
 saveBtn.addEventListener("click", saveData);
 downloadBtn.addEventListener("click", downloadFile);
 $("validateBtn").addEventListener("click", runValidation);
