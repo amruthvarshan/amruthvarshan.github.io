@@ -486,10 +486,12 @@ section{padding:clamp(56px,7.4vw,100px) 0}
 .ctl{flex:none; width:36px; height:36px; border-radius:50%;
   display:grid; place-items:center; color:var(--muted);
   border:1.5px solid var(--rule); background:transparent;
+  transform:translateY(var(--ctly,0px));
   transition:border-color var(--fast), background-color var(--fast),
              color var(--fast), transform var(--fast)}
 .ctl svg{width:14px; height:14px; transition:transform var(--mid) var(--spring)}
-.crow:hover .ctl{border-color:var(--accent); color:var(--accent); transform:scale(1.06)}
+.crow:hover .ctl{border-color:var(--accent); color:var(--accent);
+  transform:translateY(var(--ctly,0px)) scale(1.06)}
 .crow.open .ctl{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
 .crow.open .ctl svg{transform:rotate(180deg)}
 
@@ -554,7 +556,7 @@ section{padding:clamp(56px,7.4vw,100px) 0}
    ============================================================ */
 footer{border-top:1px solid var(--rule); padding:36px 0 52px}
 footer .in{display:flex; flex-wrap:wrap; gap:16px 30px; align-items:center;
-  font:400 14px "Inter Tight",sans-serif; color:var(--muted)}
+  font:400 14px/1.6 "Inter Tight",sans-serif; color:var(--muted)}
 footer .copy{margin-right:auto; color:var(--ink-2)}
 footer .copy .sep{color:var(--rule); margin:0 1px}
 footer .em{font:500 15px "Inter Tight",sans-serif; color:var(--ink-2); position:relative}

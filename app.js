@@ -6,9 +6,6 @@
    Exposes window.UI:
 
      UI.esc(str)                  HTML-escape
-     UI.years(from,to)            "4 yrs" / "9 mo" — computed, never typed
-     UI.slug(str)                 stable anchor id from a company name
-     UI.axisFor(career)           derive the timeline range from the roles
      UI.theme()                   wire the light/dark toggle
      UI.reveal()                  scroll reveal + chart growth
      UI.nav()                     sliding underline + active section
@@ -17,6 +14,10 @@
      UI.carousel(el)              turn a .carousel into a working one
      UI.chart(el, career, opts)   the career timeline
          opts.expand : true → rows expand in place to show full detail
+
+   years(from,to), slug(str) and axisFor(career) are internal helpers used
+   only by chart() — they used to be exposed on UI too, but nothing outside
+   this file ever called them that way, so they're private now.
 
    MOTION CONTRACT
      Nothing animates on its own. Everything is driven by the pointer or the
@@ -457,6 +458,29 @@ window.UI = (function () {
         var overflow = now.getBoundingClientRect().right - ticks.getBoundingClientRect().right;
         if (overflow > 0) now.style.transform = 'translateX(' + (-overflow) + 'px)';
       }
+      /* The expand chevron sits in the same flex row as the rest of a
+         role's content and is centered against that row's FULL height —
+         which is fine as long as the row is exactly as tall as its bar's
+         own neighbourhood, but at narrow widths the margin column (company
+         name, location) stacks above the content instead of sitting
+         beside it, making the row taller without moving the bar's own
+         position within it. That shifts where "centered" lands away from
+         the bar specifically. Same fix as the other two: measure the real
+         offset between the chevron's center and the bar's, per row, and
+         correct for exactly that — rather than a fixed breakpoint-specific
+         margin that would only happen to be right for some content
+         lengths. Uses a CSS variable rather than setting transform
+         directly, since .ctl already has its own hover-scale transform
+         and this needs to compose with it, not replace it. */
+      [].forEach.call(el.querySelectorAll('.crow'), function (row) {
+        var track = row.querySelector('.tracked');
+        var ctl = row.querySelector('.ctl');
+        if (!track || !ctl) return;
+        ctl.style.setProperty('--ctly', '0px');
+        var t = track.getBoundingClientRect(), c = ctl.getBoundingClientRect();
+        var offset = (t.top + t.height / 2) - (c.top + c.height / 2);
+        if (Math.abs(offset) > 0.5) ctl.style.setProperty('--ctly', offset.toFixed(2) + 'px');
+      });
     }
     fit();
     addEventListener('resize', fit, { passive: true });
@@ -573,7 +597,7 @@ window.UI = (function () {
 
   return {
     calm: CALM, fine: FINE, now: NOW,
-    esc: esc, years: years, slug: slug, axisFor: axisFor, tierLabel: tierLabel,
+    esc: esc,
     theme: theme, reveal: reveal, nav: nav, progress: progress,
     glance: glance, carousel: carousel, chart: chart
   };
