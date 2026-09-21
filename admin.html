@@ -514,6 +514,17 @@ const validationList = $("validationList");
 const preview = $("preview");
 /* githubMode flag removed — saving is gated on currentSha + a token being present (see updateSaveAvailability), not on how the data was loaded */
 
+/* See index.html's own comment on this same message for the WebKit/iOS
+   quirk this works around. previewedContentWindow, not preview itself —
+   printing the <iframe> element from the parent's own context is exactly
+   the "print reaches outside the iframe" problem this exists to avoid;
+   only the previewed document's own window should ever be the target. */
+addEventListener("message", (e) => {
+  if (!e.data || e.data.type !== "site-print-request") return;
+  if (e.source !== preview.contentWindow) return;
+  preview.contentWindow.print();
+});
+
 /* ============================================================================
    GITHUB API
    ============================================================================ */

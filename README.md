@@ -447,16 +447,17 @@ Each role carries two bullet arrays: `detail` for the expanded chart row,
 `print` for the PDF. **The `print` array is your page-length dial** — if the
 sheet spills onto a second page, cut from `print` first. The two columns
 (`main` for Experience, `side` for Disciplines/Tools/Projects/Education)
-don't reflow into each other — they're independent flex columns, not a true
-multi-column layout — so the page break is set by whichever column is
-taller, and keeping the two roughly balanced in height is what keeps a
-longer CV closest to fitting on one page. Moving Projects into the side
-column (rather than leaving it under Experience in `main`) was specifically
-to fix that balance once Projects existed at all: with everything long
-stacked in `main` alone, that column ran a full A4 page by itself while
-`side` finished with a third of the page still empty — verified by
-rendering an intentionally padded test case through an actual headless
-Chromium print pass, not just estimated from CSS.
+don't reflow into each other — they're independent floated columns (not
+flexbox; see "iOS and WebKit" below for why), not a true multi-column
+layout — so the page break is set by whichever column is taller, and
+keeping the two roughly balanced in height is what keeps a longer CV
+closest to fitting on one page. Moving Projects into the side column
+(rather than leaving it under Experience in `main`) was specifically to fix
+that balance once Projects existed at all: with everything long stacked in
+`main` alone, that column ran a full A4 page by itself while `side`
+finished with a third of the page still empty — verified by rendering an
+intentionally padded test case through an actual headless Chromium print
+pass, not just estimated from CSS.
 
 To export: **Save PDF** → destination "Save as PDF", A4, margins Default —
 and open **More settings** and tick **Background graphics**. Without it,
@@ -486,6 +487,71 @@ second guard.
 in-browser rendering rather than the print pipeline, it always shows full
 colour regardless of the Background Graphics setting, which makes it a good
 way to confirm the CSS itself is right before blaming the export.
+
+### iOS and WebKit
+
+Every browser on iOS — Safari, Chrome, Edge, Firefox, all of them — is
+required by Apple to render on WebKit, the same engine under Safari itself.
+So "broken on iPhone regardless of which browser" is really one engine's
+worth of print quirks, not several browsers' worth, and none of it shows up
+in desktop Chrome DevTools' mobile emulation, since that only simulates
+screen size — the actual rendering and print pipeline underneath is still
+desktop Blink, not WebKit.
+
+**Flex containers don't paginate reliably in WebKit's print engine** — this
+is a long-documented, cross-source-confirmed limitation, not something
+specific to this project. Content inside a multi-page flex layout can get
+clipped mid-item or duplicated across pages rather than flowing cleanly
+from one to the next, and `break-inside: avoid` is itself unreliable on a
+flex container, so even the "don't split this entry across a page break"
+protection wasn't holding. This is what caused Experience/Disciplines/
+Projects to get cut off, duplicated, or lose their section headings when
+exported from an iPhone. The fix was structural, not cosmetic: `.grid`
+(the Experience/side two-column layout) and `.job` (each individual role
+entry) are floated instead of flexed. Floats predate flexbox by well over
+a decade and have always had solid print-fragmentation support — the two
+render identically on screen for a layout this simple, so nothing about
+the on-screen page or the on-screen Preview PDF changed, only what
+happens once WebKit's print engine has to paginate it. Verified end to
+end through Chromium's own real print pipeline (not just the on-screen
+approximation) after the change; the underlying WebKit-specific behaviour
+itself couldn't be verified directly, since this project has no access to
+real iOS hardware to test against — if pagination still looks wrong on a
+real device after this, that's worth reporting back.
+
+**Printing from inside `admin.html`'s live preview** had a related but
+separate bug: the previewed page runs inside an `<iframe>`, and calling
+`window.print()` from a script running *inside* that iframe is a
+documented WebKit/iOS quirk where the *parent* page's own chrome can leak
+into the printed output alongside the iframe's content — which is exactly
+what showed up as admin's own Editor/Preview tabs and validation text
+appearing in an exported PDF. The reliable fix, per WebKit's own known
+behaviour here, is having the *parent* explicitly call
+`iframe.contentWindow.print()` rather than the iframe printing itself:
+when the page detects it's embedded (`window.parent !== window`, which is
+only ever true inside admin's preview — a standalone visitor is never
+embedded), it now asks the parent to trigger the print via
+`postMessage` instead of calling `window.print()` directly. Verified the
+full message round-trip and confirmed `print()` genuinely gets called on
+the iframe's own window, not the parent's; standalone site behaviour
+(window.print() called directly) is unchanged and was confirmed identical
+before and after.
+
+**One thing this can't fix:** iOS's own print pipeline (both Safari and
+every other WebKit-based browser there) does not respect `@page { margin:
+0 }` — a long-standing, still-unresolved WebKit bug confirmed across
+several years of reports, including a direct account of an Apple Support
+call confirming there is currently no user-facing way to disable it on
+iPhone or iPad (macOS Safari does have a Headers & Footers toggle in its
+print dialog; the mobile print flow simply doesn't expose the equivalent
+option at all). `@page { margin: 0 }` is what suppresses the browser's own
+injected header and footer (site name, date, page number) in Chrome and
+Edge on desktop — on iOS, WebKit silently ignores that rule and falls
+back to its own default margin, which is exactly where it places that
+injected text, producing the white border and footer text around the
+exported page. There is no CSS or JS-level workaround for this; it is a
+platform limitation, not a bug in this project, and nothing here claims
+to have fixed it.
 
 ---
 

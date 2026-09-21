@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Amruth Varshan</title>
-<meta name="description" content="Experienced Generalist Designer">
+<meta name="description" content="Game designer, narrative designer and writer. Eight years across five studios — Rovio, Zynga, Ubisoft.">
 <link rel="icon" type="image/svg+xml" href="/images/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,9 +68,19 @@
 #sheet .rule{height:2.4pt; background:var(--accent); margin:3.2mm 0 3mm}
 #sheet .pitch{font:300 12pt/1.4 "Newsreader",serif; font-style:italic; color:var(--ink-2); margin:0 0 5mm}
 
-/* --- body grid --- */
-#sheet .grid{display:flex; gap:9mm; align-items:flex-start}
-#sheet .main{flex:1 1 63%} #sheet .side{flex:0 0 33%}
+/* --- body grid ---
+   Floats, not flex. WebKit's print engine (which is what every browser on
+   iOS is required to use, "Chrome" included — Apple mandates it) does not
+   reliably paginate flex containers: content can get clipped mid-item or
+   duplicated across pages rather than flowing cleanly from one page to the
+   next. Floats predate flexbox by well over a decade and have always had
+   solid print-fragmentation support, which is exactly the property this
+   two-column layout actually needs once it's long enough to spill onto a
+   second page — a property flex doesn't reliably have here, even though
+   both render identically on screen for a layout this simple. */
+#sheet .grid::after{content:""; display:block; clear:both}
+#sheet .main{float:left; width:63%}
+#sheet .side{float:right; width:33%}
 #sheet section{padding:0}          /* override the site's section rhythm */
 #sheet h2{font:600 7.8pt/1 "Inter Tight"; letter-spacing:.13em; color:var(--ink);
   margin:0 0 2.4mm; padding-bottom:1.1mm; border-bottom:.7pt solid var(--accent)}
@@ -78,16 +88,22 @@
 
 /* Each role gets a small dot in the left margin with a hairline trailing
    down to the next one — the same tenure-marker language as the on-page
-   chart, quietened for print. The dot sits in its own column (.tl) so the
-   connecting line has a stable place to anchor regardless of how many
-   bullets a given role has. */
-#sheet .job{display:flex; gap:2.6mm; margin-bottom:3.4mm; break-inside:avoid; padding:0; border:0}
-#sheet .job .tl{flex:0 0 2mm; padding-top:1.31mm; position:relative}
+   chart, quietened for print. .tl needs to span the role's FULL height
+   (however many bullets it has) for that trailing line to actually reach
+   the next dot — flex's default align-items:stretch used to do this for
+   free, but a floated .tl only takes the height of its own content (just
+   the dot), which is exactly what made the line cut off partway down
+   after switching away from flex for pagination reasons. Absolute
+   positioning against .job's own position:relative replicates the same
+   full-height stretch without touching flex at all — this has always had
+   solid print support, same as the floats used elsewhere on this page. */
+#sheet .job{position:relative; margin-bottom:3.4mm; break-inside:avoid;
+  padding:0 0 0 4.6mm; border:0}
+#sheet .job .tl{position:absolute; top:0; left:0; bottom:0; width:2mm; padding-top:1.31mm}
 #sheet .job .tl i{display:block; width:2mm; height:2mm; border-radius:50%; background:var(--accent)}
 #sheet .job .tl::after{content:""; position:absolute; top:4.93mm; bottom:-3.4mm; left:.9mm;
   width:.5pt; background:var(--rule)}
 #sheet .job:last-child .tl::after{display:none}
-#sheet .job .jbody{flex:1; min-width:0}
 #sheet .job .r1{display:flex; justify-content:space-between; align-items:baseline; gap:4mm}
 #sheet .job .co{font:600 11.4pt/1.15 "Newsreader",serif; color:var(--ink)}
 #sheet .job .dt{font-size:8pt; color:var(--muted); white-space:nowrap}
@@ -100,16 +116,24 @@
 
 /* Disciplines and Tools: plain bordered chips, one per item. Replaces an
    earlier inline dot-separated line, which read as one run-on fragment
-   rather than a list of distinct things. */
-#sheet .chips{display:flex; flex-wrap:wrap; gap:1.6mm}
-#sheet .chip{font-size:7.6pt; padding:1.2mm 2.4mm; border:.6pt solid var(--rule);
-  border-radius:1mm; color:var(--ink-2)}
+   rather than a list of distinct things. inline-block rather than flex-
+   wrap — the browser wraps these onto new lines exactly the way it wraps
+   words in a paragraph, no flex container (and so no print-pagination
+   risk) required for what is fundamentally just a wrapping row of tags. */
+#sheet .chips{font-size:0}
+#sheet .chip{display:inline-block; font-size:7.6pt; padding:1.2mm 2.4mm; margin:0 1.6mm 1.6mm 0;
+  border:.6pt solid var(--rule); border-radius:1mm; color:var(--ink-2)}
 
 /* Projects, in the side column: a single stacked list (there's no room for
    the two-up grid the web page's carousel affords at this column width),
-   each entry marked with a left rule rather than a bullet. */
-#sheet .proj{display:flex; flex-direction:column; gap:3mm}
-#sheet .proj .p{break-inside:avoid; border-left:1.4pt solid var(--accent); padding-left:2.6mm}
+   each entry marked with a left rule rather than a bullet. Plain block
+   stacking — flex-direction:column with no wrapping was never doing
+   anything a block-level list doesn't already do on its own, so there
+   was nothing to lose by removing it and no reason to carry the same
+   print-pagination risk as everywhere else here. */
+#sheet .proj .p{break-inside:avoid; border-left:1.4pt solid var(--accent); padding-left:2.6mm;
+  margin-bottom:3mm}
+#sheet .proj .p:last-child{margin-bottom:0}
 #sheet .proj .pt{font:600 9.2pt/1.2 "Newsreader",serif; color:var(--ink)}
 #sheet .proj .pm{font-size:7.4pt; color:var(--muted); font-weight:500; margin:.3mm 0 1.2mm;
   text-transform:uppercase; letter-spacing:.03em}
@@ -562,6 +586,28 @@
      here is guarded rather than assuming either exists. */
   var TITLE = document.title;
   var printBtn = $('#print'), previewBtn = $('#preview');
+  /* WebKit (every browser on iOS, "Chrome" included — Apple requires it)
+     has a documented quirk where window.print() called from a script
+     running INSIDE an iframe can print the parent page's own chrome
+     alongside the iframe's content, rather than staying scoped to just
+     the iframe — which is exactly what showed up as admin.html's Editor/
+     Preview tabs and its validation text appearing in an exported PDF.
+     The reliable fix is having the PARENT explicitly call this iframe's
+     own contentWindow.print(), rather than the iframe printing itself —
+     so when embedded (admin.html's live preview is the only place this
+     happens), this asks the parent to do that instead of printing
+     directly. Standalone visitors are never embedded, so window.parent
+     is window there and nothing here changes for them. */
+  var embedded = window.parent && window.parent !== window;
+  function doPrint() {
+    document.title = d.name.first + ' ' + d.name.last + ' — CV';
+    if (embedded) {
+      window.parent.postMessage({ type: 'site-print-request' }, '*');
+    } else {
+      window.print();
+    }
+    setTimeout(function () { document.title = TITLE; }, 800);
+  }
   if (printBtn) printBtn.addEventListener('click', function () {
     /* Belt and suspenders alongside the @media screen scoping above:
        leaving preview mode before printing means there's nothing left
@@ -570,9 +616,7 @@
       document.body.classList.remove('preview');
       if (previewBtn) previewBtn.textContent = d.pdfButtons.preview.text;
     }
-    document.title = d.name.first + ' ' + d.name.last + ' — CV';
-    window.print();
-    setTimeout(function () { document.title = TITLE; }, 800);
+    doPrint();
   });
   if (previewBtn) previewBtn.addEventListener('click', function (e) {
     var on = document.body.classList.toggle('preview');
