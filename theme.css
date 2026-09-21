@@ -486,12 +486,10 @@ section{padding:clamp(56px,7.4vw,100px) 0}
 .ctl{flex:none; width:36px; height:36px; border-radius:50%;
   display:grid; place-items:center; color:var(--muted);
   border:1.5px solid var(--rule); background:transparent;
-  transform:translateY(var(--ctly,0px));
   transition:border-color var(--fast), background-color var(--fast),
              color var(--fast), transform var(--fast)}
 .ctl svg{width:14px; height:14px; transition:transform var(--mid) var(--spring)}
-.crow:hover .ctl{border-color:var(--accent); color:var(--accent);
-  transform:translateY(var(--ctly,0px)) scale(1.06)}
+.crow:hover .ctl{border-color:var(--accent); color:var(--accent); transform:scale(1.06)}
 .crow.open .ctl{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
 .crow.open .ctl svg{transform:rotate(180deg)}
 

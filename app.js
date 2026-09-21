@@ -469,17 +469,27 @@ window.UI = (function () {
          offset between the chevron's center and the bar's, per row, and
          correct for exactly that — rather than a fixed breakpoint-specific
          margin that would only happen to be right for some content
-         lengths. Uses a CSS variable rather than setting transform
-         directly, since .ctl already has its own hover-scale transform
-         and this needs to compose with it, not replace it. */
+         lengths. Uses margin-top rather than transform: fit() reruns on
+         every resize, and on a real phone (not desktop DevTools emulation)
+         scrolling itself fires resize repeatedly as the browser's address
+         bar collapses and reappears — .ctl's transform is transitioned
+         for its hover-scale and open-rotate effects, so correcting through
+         transform too would visibly animate the chevron on every one of
+         those recalculations, reading as it drifting up and down while
+         scrolling. margin-top isn't transitioned, so it snaps instantly
+         instead, however often this runs. */
       [].forEach.call(el.querySelectorAll('.crow'), function (row) {
         var track = row.querySelector('.tracked');
         var ctl = row.querySelector('.ctl');
         if (!track || !ctl) return;
-        ctl.style.setProperty('--ctly', '0px');
+        ctl.style.marginTop = '0px';
         var t = track.getBoundingClientRect(), c = ctl.getBoundingClientRect();
         var offset = (t.top + t.height / 2) - (c.top + c.height / 2);
-        if (Math.abs(offset) > 0.5) ctl.style.setProperty('--ctly', offset.toFixed(2) + 'px');
+        /* ×2: .crowbtn centers .ctl via align-items:center, which centers
+           its full margin box — an asymmetric margin-top only moves the
+           rendered position by half of itself, since the other half of
+           that space gets redistributed by the centering itself. */
+        if (Math.abs(offset) > 0.5) ctl.style.marginTop = (offset * 2).toFixed(2) + 'px';
       });
     }
     fit();
